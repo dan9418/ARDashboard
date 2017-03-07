@@ -1,37 +1,33 @@
 package com.catchoom.test;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.craftar.CraftARBoundingBox;
+import com.craftar.CraftARCamera;
 import com.craftar.CraftARError;
-import com.craftar.CraftAROnDeviceCollection;
-import com.craftar.CraftAROnDeviceCollectionManager;
 import com.craftar.CraftAROnDeviceIR;
 import com.craftar.CraftARResult;
 import com.craftar.CraftARSDK;
 import com.craftar.CraftARSearchResponseHandler;
 import com.craftar.CraftARActivity;
-import com.craftar.ImageRecognition;
 
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class SingleShotActivity extends CraftARActivity implements CraftARSearchResponseHandler, ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
+public class SingleShotActivity extends CraftARActivity implements CraftARSearchResponseHandler {
 
-    CraftARSDK mCraftARSDK;
+    //Singleton classes
     CraftAROnDeviceIR mOnDeviceIR;
+    CraftARSDK mCraftARSDK;
+    CraftARCamera mCamera;
+    //Local variables
     TrackingBox trackingBox;
     View mainLayout;
-    private String TOKEN = "d87a91ed431f45bc";
 
     @Override
     public void onPostCreate() {
@@ -39,33 +35,24 @@ public class SingleShotActivity extends CraftARActivity implements CraftARSearch
         mainLayout = getLayoutInflater().inflate(R.layout.activity_single_shot, null);
         setContentView(mainLayout);
 
-        // Obtain an instance and initialize the CraftARSDK (which manages the camera interaction).
-        CraftARSDK.Instance().init(getApplicationContext());
+        //Obtain an instance of the CraftARSDK (which manages the camera interaction).
+        //Note we already called CraftARSDK.init() in the Splash Screen, so we don't have to do it again
         mCraftARSDK = CraftARSDK.Instance();
         mCraftARSDK.startCapture(this);
 
-        //Add collection
-        CraftAROnDeviceCollectionManager collectionManager = CraftAROnDeviceCollectionManager.Instance();
-        CraftAROnDeviceCollection collection = collectionManager.get(TOKEN);
-        if(collection != null) {
-            collection.sync(this);
-        } else{
-            collectionManager.addCollection("database.zip", this);
-        }
-
-        // Get the instance to the OnDeviceIR singleton
-        Context context = getApplicationContext();
-        mCraftARSDK.init(context);
+        //Get the instance to the OnDeviceIR singleton (it has already been initialized in the SplashScreenActivity, and the collections are already loaded).
         mOnDeviceIR = CraftAROnDeviceIR.Instance();
-        mOnDeviceIR.setCollection(collection, true, this);
 
-        // Tell the SDK who manage the calls to singleShotSearch() and startFinding().
-        // In this case, as we are using on-device-image-recognition, we will tell the
-        // SDK that the OnDeviceIR singleton will manage this calls.
+        //Tell the SDK that the OnDeviceIR who manage the calls to singleShotSearch() and startFinding().
+        //In this case, as we are using on-device-image-recognition, we will tell the SDK that the OnDeviceIR singleton will manage this calls.
         mCraftARSDK.setSearchController(mOnDeviceIR.getSearchController());
 
-        // Tell the SDK that we want to receive the search responses in this class.
+        //Tell the SDK that we want to receive the search responses in this class.
         mOnDeviceIR.setCraftARSearchResponseHandler(this);
+
+        //Obtain the reference to the camera, to be able to restart the camera, trigger focus etc.
+        //Note that if you use single-shot, you will always have to obtain the reference to the camera to restart it after you take the snapshot.
+        mCamera = mCraftARSDK.getCamera();
 
         final Button captureButton = (Button) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new View.OnClickListener() {
@@ -133,63 +120,8 @@ public class SingleShotActivity extends CraftARActivity implements CraftARSearch
         Log.d(TAG, "Preview started");
     }
 
-    @Override
-    public void collectionAdded(CraftAROnDeviceCollection collection) {
-        Log.e(TAG, "Collection added");
-        collection.sync(this);
-    }
-
-    @Override
-    public void addCollectionFailed(CraftARError error) {
-        Toast.makeText(getApplicationContext(), "AddCollection failed: "+
-                error.getErrorMessage(), Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    @Override
-    public void addCollectionProgress(float progress) {
-        Log.d(TAG, "addCollectionProgress "+progress);
-    }
-
-    @Override
-    public void syncSuccessful(CraftAROnDeviceCollection collection) {
-        Log.d(TAG, "Sync successful");
-        startCraftARActivity();
-    }
-
-    @Override
-    public void syncFinishedWithErrors(CraftAROnDeviceCollection craftAROnDeviceCollection, int i, int i1) {
-        Log.d(TAG, "Sync finished with errors");
-    }
-
-    @Override
-    public void syncProgress(CraftAROnDeviceCollection collection, float progress) {
-        Log.e(TAG, "syncProgress : "+progress);
-
-    }
-
-    @Override
-    public void syncFailed(CraftAROnDeviceCollection collection, CraftARError error) {
-        Log.e(TAG, "syncFailed : "+error.getErrorMessage());
-    }
-
     private void startCraftARActivity(){
         Log.d(TAG, "Starting CraftARActivity");
-    }
-
-    @Override
-    public void setCollectionProgress(double v) {
-        Log.d(TAG, "Collection progress: " + v);
-    }
-
-    @Override
-    public void collectionReady() {
-        Log.d(TAG, "Collection ready");
-    }
-
-    @Override
-    public void setCollectionFailed(CraftARError craftARError) {
-        Log.d(TAG, "Setting connection failed..");
     }
 
 }
