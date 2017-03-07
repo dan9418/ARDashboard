@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class ImageRecognitionActivity extends CraftARActivity implements CraftARSearchResponseHandler, ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
+public class ContinuousActivity extends CraftARActivity implements CraftARSearchResponseHandler, ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
 
     CraftARSDK mCraftARSDK;
     CraftAROnDeviceIR mOnDeviceIR;

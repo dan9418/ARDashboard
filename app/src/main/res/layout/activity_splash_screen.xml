@@ -11,10 +11,17 @@
     tools:context="com.catchoom.test.SplashScreen">
 
     <Button
-        android:text="Launch Camera"
+        android:text="Continuous Mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/button_continuous" />
+
+    <Button
+        android:text="Single Shot Mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_single_shot"
+        android:layout_marginTop="52dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

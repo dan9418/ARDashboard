@@ -2,6 +2,7 @@ package com.catchoom.test;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,16 +25,17 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class ImageRecognitionActivity extends CraftARActivity implements CraftARSearchResponseHandler, ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
+public class SingleShotActivity extends CraftARActivity implements CraftARSearchResponseHandler, ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
 
     CraftARSDK mCraftARSDK;
     CraftAROnDeviceIR mOnDeviceIR;
+    TrackingBox trackingBox;
     private String TOKEN = "d87a91ed431f45bc";
 
     @Override
     public void onPostCreate() {
         //Set layout
-        View mainLayout= getLayoutInflater().inflate(R.layout.activity_continuous, null);
+        View mainLayout = getLayoutInflater().inflate(R.layout.activity_single_shot, null);
         setContentView(mainLayout);
 
         // Obtain an instance and initialize the CraftARSDK (which manages the camera interaction).
@@ -71,21 +73,15 @@ public class ImageRecognitionActivity extends CraftARActivity implements CraftAR
             }
         });
 
+        trackingBox = new TrackingBox(this);
+        addContentView(trackingBox, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
+
     }
 
     //Called on button push
     private void startSingleShot(View view) {
-        if(mCraftARSDK.isFinding()) {
-            mCraftARSDK.stopFinder();
-        }
         Toast.makeText(getApplicationContext(), "Capturing...", Toast.LENGTH_SHORT).show();
         mCraftARSDK.singleShotSearch();
-    }
-
-    //Called on button push
-    private void restartFinder(View view) {
-        Toast.makeText(getApplicationContext(), "Searching...", Toast.LENGTH_SHORT).show();
-        mCraftARSDK.startFinder();
     }
 
     //Works for both Finder and Single Shot
@@ -105,8 +101,9 @@ public class ImageRecognitionActivity extends CraftARActivity implements CraftAR
                         " Score="+score, Toast.LENGTH_SHORT).show();
 
                 CraftARBoundingBox box = result.getBoundingBox();
-                RelativeLayout layout = (RelativeLayout)findViewById(R.id.activity_continuous);
+                RelativeLayout layout = (RelativeLayout)findViewById(R.id.activity_single_shot);
                 assignBoxPosition(layout, box);
+
             }
         }
         else {
@@ -119,20 +116,30 @@ public class ImageRecognitionActivity extends CraftARActivity implements CraftAR
     public void assignBoxPosition(RelativeLayout layout, CraftARBoundingBox box) {
         int w = layout.getWidth();
         int h = layout.getHeight();
+
+        trackingBox.TOP_SIDE = box.TLy * h;
+        trackingBox.BOTTOM_SIDE = box.BLy * h;
+        trackingBox.LEFT_SIDE = box.TLx * w;
+        trackingBox.RIGHT_SIDE = box.TRx * w;
+        trackingBox.invalidate();
+
+
+        Log.d(TAG, "[" + w + "," + h + "]");
+        Log.d(TAG, "TL(" + box.TLx + "," + box.TLy + ") TR(" + box.TRx + "," + box.TRx + "), BL(" + box.BLx + "," + box.BLx + ") BR(" + box.BRx + "," + box.BRx + ")");
         //Top Left
-        assignPosition((TextView) findViewById(R.id.topRight), (int) (h * box.TLx), (int) (w * box.TLy));
+        assignPosition((TextView) findViewById(R.id.topLeft), (int) (w * box.TLx), (int) (h * box.TLy));
         //Top Right
-        assignPosition((TextView) findViewById(R.id.topLeft), (int) (h * box.TRx), (int) (w * box.TRy));
+        assignPosition((TextView) findViewById(R.id.topRight), (int) (w * box.TRx), (int) (h * box.TRy));
         //Bottom Left
-        assignPosition((TextView) findViewById(R.id.bottomRight), (int) (h * box.BLx), (int) (w * box.BLy));
+        assignPosition((TextView) findViewById(R.id.bottomLeft), (int) (w * box.BLx), (int) (h * box.BLy));
         //Bottom Right
-        assignPosition((TextView) findViewById(R.id.bottomLeft), (int) (h * box.BRx), (int) (w * box.BRy));
+        assignPosition((TextView) findViewById(R.id.bottomRight), (int) (w * box.BRx), (int) (h * box.BRy));
     }
 
     public void assignPosition(TextView tv, int x, int y) {
         RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) tv.getLayoutParams();
-        p.leftMargin = y;
-        p.topMargin = x;
+        p.leftMargin = x;
+        p.topMargin = y;
         tv.setLayoutParams(p);
         tv.setTextColor(Color.RED);
     }
