@@ -30,12 +30,13 @@ public class SingleShotActivity extends CraftARActivity implements CraftARSearch
     CraftARSDK mCraftARSDK;
     CraftAROnDeviceIR mOnDeviceIR;
     TrackingBox trackingBox;
+    View mainLayout;
     private String TOKEN = "d87a91ed431f45bc";
 
     @Override
     public void onPostCreate() {
         //Set layout
-        View mainLayout = getLayoutInflater().inflate(R.layout.activity_single_shot, null);
+        mainLayout = getLayoutInflater().inflate(R.layout.activity_single_shot, null);
         setContentView(mainLayout);
 
         // Obtain an instance and initialize the CraftARSDK (which manages the camera interaction).
@@ -102,7 +103,7 @@ public class SingleShotActivity extends CraftARActivity implements CraftARSearch
 
                 CraftARBoundingBox box = result.getBoundingBox();
                 RelativeLayout layout = (RelativeLayout)findViewById(R.id.activity_single_shot);
-                assignBoxPosition(layout, box);
+                trackingBox.assignBoxPosition(layout, box);
 
             }
         }
@@ -113,36 +114,7 @@ public class SingleShotActivity extends CraftARActivity implements CraftARSearch
         //mCraftARSDK.getCamera().restartCapture();
     }
 
-    public void assignBoxPosition(RelativeLayout layout, CraftARBoundingBox box) {
-        int w = layout.getWidth();
-        int h = layout.getHeight();
 
-        trackingBox.TOP_SIDE = box.TLy * h;
-        trackingBox.BOTTOM_SIDE = box.BLy * h;
-        trackingBox.LEFT_SIDE = box.TLx * w;
-        trackingBox.RIGHT_SIDE = box.TRx * w;
-        trackingBox.invalidate();
-
-
-        Log.d(TAG, "[" + w + "," + h + "]");
-        Log.d(TAG, "TL(" + box.TLx + "," + box.TLy + ") TR(" + box.TRx + "," + box.TRx + "), BL(" + box.BLx + "," + box.BLx + ") BR(" + box.BRx + "," + box.BRx + ")");
-        //Top Left
-        assignPosition((TextView) findViewById(R.id.topLeft), (int) (w * box.TLx), (int) (h * box.TLy));
-        //Top Right
-        assignPosition((TextView) findViewById(R.id.topRight), (int) (w * box.TRx), (int) (h * box.TRy));
-        //Bottom Left
-        assignPosition((TextView) findViewById(R.id.bottomLeft), (int) (w * box.BLx), (int) (h * box.BLy));
-        //Bottom Right
-        assignPosition((TextView) findViewById(R.id.bottomRight), (int) (w * box.BRx), (int) (h * box.BRy));
-    }
-
-    public void assignPosition(TextView tv, int x, int y) {
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) tv.getLayoutParams();
-        p.leftMargin = x;
-        p.topMargin = y;
-        tv.setLayoutParams(p);
-        tv.setTextColor(Color.RED);
-    }
 
     @Override
     public void searchFailed(CraftARError error, int requestCode) {

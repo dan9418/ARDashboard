@@ -28,12 +28,13 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
 
     CraftARSDK mCraftARSDK;
     CraftAROnDeviceIR mOnDeviceIR;
+    TrackingBox trackingBox;
     private String TOKEN = "d87a91ed431f45bc";
 
     @Override
     public void onPostCreate() {
         //Set layout
-        View mainLayout= getLayoutInflater().inflate(R.layout.activity_continuous, null);
+        View mainLayout = getLayoutInflater().inflate(R.layout.activity_continuous, null);
         setContentView(mainLayout);
 
         // Obtain an instance and initialize the CraftARSDK (which manages the camera interaction).
@@ -44,9 +45,9 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
         //Add collection
         CraftAROnDeviceCollectionManager collectionManager = CraftAROnDeviceCollectionManager.Instance();
         CraftAROnDeviceCollection collection = collectionManager.get(TOKEN);
-        if(collection != null) {
+        if (collection != null) {
             collection.sync(this);
-        } else{
+        } else {
             collectionManager.addCollection("database.zip", this);
         }
 
@@ -64,26 +65,21 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
         // Tell the SDK that we want to receive the search responses in this class.
         mOnDeviceIR.setCraftARSearchResponseHandler(this);
 
-        final Button captureButton = (Button) findViewById(R.id.capture_button);
+        trackingBox = new TrackingBox(this);
+        addContentView(trackingBox, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
+
+        final Button captureButton = (Button) findViewById(R.id.restart_button);
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startSingleShot(v);
+                restartFinder();
             }
         });
 
+        restartFinder();
     }
 
     //Called on button push
-    private void startSingleShot(View view) {
-        if(mCraftARSDK.isFinding()) {
-            mCraftARSDK.stopFinder();
-        }
-        Toast.makeText(getApplicationContext(), "Capturing...", Toast.LENGTH_SHORT).show();
-        mCraftARSDK.singleShotSearch();
-    }
-
-    //Called on button push
-    private void restartFinder(View view) {
+    private void restartFinder() {
         Toast.makeText(getApplicationContext(), "Searching...", Toast.LENGTH_SHORT).show();
         mCraftARSDK.startFinder();
     }
@@ -106,7 +102,7 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
 
                 CraftARBoundingBox box = result.getBoundingBox();
                 RelativeLayout layout = (RelativeLayout)findViewById(R.id.activity_continuous);
-                assignBoxPosition(layout, box);
+                trackingBox.assignBoxPosition(layout, box);
             }
         }
         else {
@@ -114,27 +110,7 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
             Toast.makeText(getApplicationContext(), "Nothing found", Toast.LENGTH_SHORT).show();
         }
         //mCraftARSDK.getCamera().restartCapture();
-    }
-
-    public void assignBoxPosition(RelativeLayout layout, CraftARBoundingBox box) {
-        int w = layout.getWidth();
-        int h = layout.getHeight();
-        //Top Left
-        assignPosition((TextView) findViewById(R.id.topRight), (int) (h * box.TLx), (int) (w * box.TLy));
-        //Top Right
-        assignPosition((TextView) findViewById(R.id.topLeft), (int) (h * box.TRx), (int) (w * box.TRy));
-        //Bottom Left
-        assignPosition((TextView) findViewById(R.id.bottomRight), (int) (h * box.BLx), (int) (w * box.BLy));
-        //Bottom Right
-        assignPosition((TextView) findViewById(R.id.bottomLeft), (int) (h * box.BRx), (int) (w * box.BRy));
-    }
-
-    public void assignPosition(TextView tv, int x, int y) {
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) tv.getLayoutParams();
-        p.leftMargin = y;
-        p.topMargin = x;
-        tv.setLayoutParams(p);
-        tv.setTextColor(Color.RED);
+        restartFinder();
     }
 
     @Override
