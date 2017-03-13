@@ -22,4 +22,11 @@
 
     </com.craftar.CraftARCameraView>
 
+    <ImageView
+        android:id="@+id/warning_label"
+        android:src="@drawable/proximityWarning3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 </RelativeLayout>

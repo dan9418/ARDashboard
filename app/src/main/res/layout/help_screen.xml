@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="64dp"
+    android:paddingRight="64dp"
+    android:paddingTop="16dp"
+    tools:context="com.catchoom.test.SplashScreen">
+
+    <ImageView
+        android:id="@+id/help_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/helpHeader"
+        android:layout_centerHorizontal="true"
+        android:minWidth="600dp"
+        android:minHeight="100dp"
+        />
+
+    <TextView
+        android:id="@+id/using_dash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/help_header"
+        android:text="Using the AR Dashboard"
+        android:textSize="20sp"
+        android:textColor="#231f20"
+        android:paddingBottom="10dp"
+        />
+
+    <TextView
+        android:id="@+id/help_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/using_dash"
+        android:text="Hold the tablet in landscape orientation while pointing the rear facing camera at the switchgear. Adjust your position so that the entire switchgear or the desired switchgear component is in the tablet’s field of vision. When the switchgear/component is recognized the tablet will display the operating conditions corresponding to the switchgear’s database. "
+        android:textSize="20sp"
+        android:paddingLeft="50dp"
+        android:textColor="#231f20"
+        android:paddingBottom="25dp"
+        />
+
+    <TextView
+        android:id="@+id/continuous_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/help_text1"
+        android:text="Continuous Mode"
+        android:textSize="20sp"
+        android:textColor="#231f20"
+        android:paddingBottom="10dp"
+        />
+
+    <TextView
+        android:id="@+id/continuous_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/continuous_header"
+        android:text="Continuous mode provides the user with the full AR experience. This mode displays the component’s operating conditions over the live feed from the tablet’s camera, allowing the user to adjust the view of the camera to observe different components."
+        android:textSize="20sp"
+        android:paddingLeft="50dp"
+        android:textColor="#231f20"
+        android:paddingBottom="25dp"
+        />
+
+    <TextView
+        android:id="@+id/capture_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/continuous_text"
+        android:text="Capture Mode"
+        android:textSize="20sp"
+        android:textColor="#231f20"
+        android:paddingBottom="10dp"
+        />
+
+    <TextView
+        android:id="@+id/capture_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/capture_header"
+        android:text="Capture mode allows the user to take a photo of the switchgear or component. This mode displays the component’s operating conditions over the photo, allowing the user to walk away from the equipment while receiving an updating feed of operating conditions."
+        android:textSize="20sp"
+        android:paddingLeft="50dp"
+        android:textColor="#231f20"
+        android:paddingBottom="25dp"
+        />
+
+    <TextView
+        android:id="@+id/warnings_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/capture_text"
+        android:text="Warnings"
+        android:textSize="20sp"
+        android:textColor="#231f20"
+        android:paddingRight="10dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="25dp"
+        />
+
+    <TextView
+        android:id="@+id/warnings_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/warnings_header"
+        android:text="In the case that the user moves too close to the switchgear while using the AR Dashboard, a warning will appear on the screen notifying the user that he/she is too close to the switchgear. Functionality of the AR Dashboard may be temporarily stopped when this warning is displayed. Functionality will be regained when the user steps back from the unit."
+        android:textSize="20sp"
+        android:paddingLeft="50dp"
+        android:textColor="#231f20"
+        android:paddingBottom="25dp"
+        />
+
+    <TextView
+        android:id="@+id/setup_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/warnings_text"
+        android:text="Setup"
+        android:textSize="20sp"
+        android:textColor="#231f20"
+        android:paddingRight="10dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="25dp"
+        />
+
+    <TextView
+        android:id="@+id/setup_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/setup_header"
+        android:text="Please refer to the AR Dashboard documentation to learn about the setup process when using this application for the first time on a new switchboard."
+        android:textSize="20sp"
+        android:paddingLeft="50dp"
+        android:textColor="#231f20"
+        android:paddingBottom="25dp"
+        />
+
+    <ImageButton
+        android:id="@+id/menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/menu_imageButton"
+        android:layout_below="@id/setup_text"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
