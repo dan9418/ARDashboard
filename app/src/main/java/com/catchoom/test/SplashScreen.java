@@ -1,29 +1,129 @@
 package com.catchoom.test;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-public class SplashScreen extends AppCompatActivity {
+import com.craftar.CraftARError;
+import com.craftar.CraftAROnDeviceCollection;
+import com.craftar.CraftAROnDeviceCollectionManager;
+import com.craftar.CraftAROnDeviceIR;
+import com.craftar.CraftARSDK;
+import com.craftar.ImageRecognition;
+
+import static android.content.ContentValues.TAG;
+
+public class SplashScreen extends AppCompatActivity implements ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
+
+    CraftAROnDeviceIR mCraftAROnDeviceIR;
+    CraftAROnDeviceCollectionManager mCollectionManager;
+    private String TOKEN = "d87a91ed431f45bc";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        final Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button button_single_shot = (Button) findViewById(R.id.button_single_shot);
+        button_single_shot.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                launchCamera(v);
+                launchSingleShot(v);
             }
         });
 
+        final Button button_continuous = (Button) findViewById(R.id.button_continuous);
+        button_continuous.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                launchContinuous(v);
+            }
+        });
+
+        CraftARSDK.Instance().init(getApplicationContext());
+
+        //Initialize the Collection Manager
+        mCollectionManager = CraftAROnDeviceCollectionManager.Instance();
+
+        //Initialize the Offline IR Module
+        mCraftAROnDeviceIR = CraftAROnDeviceIR.Instance();
+
+        //Add collection
+        CraftAROnDeviceCollection collection = mCollectionManager.get(TOKEN);
+        if(collection != null) {
+            collection.sync(this);
+        } else{
+            mCollectionManager.addCollection("database.zip", this);
+        }
+        mCraftAROnDeviceIR.setCollection(collection, true, this);
     }
 
-    private void launchCamera(View view) {
-        Intent intent = new Intent(this, ImageRecognitionActivity.class);
+    private void launchSingleShot(View view) {
+        Intent intent = new Intent(this, SingleShotActivity.class);
         startActivity(intent);
+    }
+
+    private void launchContinuous(View view) {
+        Intent intent = new Intent(this, ContinuousActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void collectionAdded(CraftAROnDeviceCollection collection) {
+        Log.e(TAG, "Collection added");
+        collection.sync(this);
+    }
+
+    @Override
+    public void addCollectionFailed(CraftARError error) {
+        Toast.makeText(getApplicationContext(), "AddCollection failed: "+
+                error.getErrorMessage(), Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    @Override
+    public void addCollectionProgress(float progress) {
+        Log.d(TAG, "addCollectionProgress "+ progress);
+    }
+
+    @Override
+    public void syncSuccessful(CraftAROnDeviceCollection craftAROnDeviceCollection) {
+        Log.d(TAG, "Sync successful");
+        //startCraftARActivity();
+    }
+
+    @Override
+    public void syncFinishedWithErrors(CraftAROnDeviceCollection craftAROnDeviceCollection, int i, int i1) {
+        Log.d(TAG, "Sync finished with errors");
+    }
+
+    @Override
+    public void syncProgress(CraftAROnDeviceCollection craftAROnDeviceCollection, float progress) {
+        Log.e(TAG, "syncProgress : "+progress);
+    }
+
+    @Override
+    public void syncFailed(CraftAROnDeviceCollection craftAROnDeviceCollection, CraftARError error) {
+        Log.e(TAG, "syncFailed : "+error.getErrorMessage());
+    }
+
+    @Override
+    public void setCollectionProgress(double progress) {
+        Log.d(TAG, "Collection progress: " + progress);
+    }
+
+    @Override
+    public void collectionReady() {
+        Log.d(TAG, "Collection ready");
+    }
+
+    @Override
+    public void setCollectionFailed(CraftARError error) {
+        Log.d(TAG, "Setting connection failed..");
     }
 }
