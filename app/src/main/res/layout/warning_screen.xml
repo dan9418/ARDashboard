@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/camera_layout"
-    tools:context="com.catchoom.test.ImageRecognitionActivity">
+    tools:context="com.catchoom.test.SplashScreen">
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/menu_button"
-        android:src="@drawable/menu_imageButton"
+        android:src="@drawable/menu_image_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"/>
 
@@ -24,7 +24,7 @@
 
     <ImageView
         android:id="@+id/warning_label"
-        android:src="@drawable/proximityWarning3"
+        android:src="@drawable/proximity_warning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

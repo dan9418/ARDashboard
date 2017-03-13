@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/splash_screen"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="16dp"
-    android:paddingLeft="64dp"
-    android:paddingRight="64dp"
-    android:paddingTop="16dp"
-    tools:context="com.catchoom.test.SplashScreen">
+    android:orientation="horizontal" >
 
     <!-- add drawable resource directory
     http://stackoverflow.com/questions/29294287/android-studio-drawable-folder-how-to-put-images-for-multiple-dpi
@@ -16,57 +10,74 @@
      <color name="colorPrimary">#2478bd</color>
     <color name="colorPrimaryDark">#231f20</color>-->
 
-    <ImageView
-        android:id="@+id/eaton_logo"
-        android:src="@drawable/Eaton_Corporation_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:maxWidth="600dp"
-        android:layout_marginTop="150dp"
-        android:layout_marginBottom="150dp"/>
+    <LinearLayout
+        android:id="@+id/left"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="10dip"
+        android:gravity="center">
 
-    <ImageView
-        android:id="@+id/welcome_image"
-        android:src="@drawable/welcomeText"
-        android:layout_width="600dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/eaton_logo"/>
+        <ImageView
+            android:id="@+id/eaton_logo"
+            android:src="@drawable/eaton_logo"
+            android:adjustViewBounds="true"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0px" />
 
+        <ImageView
+            android:id="@+id/welcome_image"
+            android:src="@drawable/welcome_text"
+            android:adjustViewBounds="true"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0px" />
 
-    <ImageButton
-        android:id="@+id/continuous_button"
-        android:src="@drawable/continuous_imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/welcome_image"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:layout_marginTop="10dp"/>
+    </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/capture_button"
-        android:src="@drawable/capture_imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/continuous_button"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:layout_marginTop="15dp"/>
+    <LinearLayout
+        android:id="@+id/right"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="10dip"
+        android:gravity="center">
 
-    <ImageButton
-        android:id="@+id/help_button"
-        android:src="@drawable/help_imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/capture_button"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:layout_marginTop="15dp"/>
-    
-</RelativeLayout>
+        <ImageButton
+            android:id="@+id/continuous_button"
+            android:src="@drawable/continuous_image_button"
+            android:adjustViewBounds="true"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="@null" />
+
+        <ImageButton
+            android:id="@+id/capture_button"
+            android:src="@drawable/capture_image_button"
+            android:adjustViewBounds="true"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="@null" />
+
+        <ImageButton
+            android:id="@+id/help_button"
+            android:src="@drawable/help_image_button"
+            android:adjustViewBounds="true"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="@null" />
+
+    </LinearLayout>
+
+</LinearLayout>

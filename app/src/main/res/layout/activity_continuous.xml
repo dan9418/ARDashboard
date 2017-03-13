@@ -4,7 +4,7 @@
     android:id="@+id/activity_continuous"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.catchoom.test.ContinuousActivity">
+    tools:context="com.catchoom.test.SplashScreen">
 
     <com.craftar.CraftARCameraView
         android:id="@+id/camera_preview"

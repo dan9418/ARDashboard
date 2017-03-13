@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.craftar.CraftARError;
@@ -28,20 +29,27 @@ public class SplashScreen extends AppCompatActivity implements ImageRecognition.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
+        setContentView(R.layout.splash_screen);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        final Button button_single_shot = (Button) findViewById(R.id.button_single_shot);
+        final ImageButton button_single_shot = (ImageButton) findViewById(R.id.capture_button);
         button_single_shot.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 launchSingleShot(v);
             }
         });
 
-        final Button button_continuous = (Button) findViewById(R.id.button_continuous);
+        final ImageButton button_continuous = (ImageButton) findViewById(R.id.continuous_button);
         button_continuous.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 launchContinuous(v);
+            }
+        });
+
+        final ImageButton button_help = (ImageButton) findViewById(R.id.help_button);
+        button_help.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                launchHelp(v);
             }
         });
 
@@ -70,6 +78,11 @@ public class SplashScreen extends AppCompatActivity implements ImageRecognition.
 
     private void launchContinuous(View view) {
         Intent intent = new Intent(this, ContinuousActivity.class);
+        startActivity(intent);
+    }
+
+    private void launchHelp(View view) {
+        Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
     }
 
