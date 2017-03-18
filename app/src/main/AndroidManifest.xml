@@ -28,7 +28,7 @@
             android:name=".ContinuousActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".SingleShotActivity"
+            android:name=".CaptureActivity"
             android:screenOrientation="landscape" />
     </application>
 

@@ -1,35 +1,20 @@
 package com.catchoom.test;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.craftar.CraftARBoundingBox;
 
-import static android.content.ContentValues.TAG;
-
-/**
- * Created by Dan on 3/7/2017.
- */
-
 public class TrackingBox extends View {
 
-    public float LEFT_SIDE = 0;
-    public float RIGHT_SIDE = 0;
-    public float TOP_SIDE = 0;
-    public float BOTTOM_SIDE = 0;
-    private Paint paint = new Paint();
-    private String title = "";
-    private String description = "";
-
+    TextView overlayHeader;
+    ImageView overlayBody;
+    TextView overlayDescription;
+    RelativeLayout cameraLayout;
 
     public TrackingBox(Context context) {
         this(context, null);
@@ -41,56 +26,69 @@ public class TrackingBox extends View {
 
     public TrackingBox(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initPaints();
     }
 
-    private void initPaints() {
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.GREEN);
-        paint.setStrokeWidth(5);
+    public void reset() {
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) overlayBody.getLayoutParams();
+        p.leftMargin = 0;
+        p.topMargin = 0;
+        p.width = 0;
+        p.height = 0;
+        overlayBody.setLayoutParams(p);
+        invalidate();
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) { // Override the onDraw() Method
-        super.onDraw(canvas);
-        //canvas.drawRect(LEFT_SIDE, TOP_SIDE, RIGHT_SIDE, BOTTOM_SIDE, paint);
+    public void assignPosition(CraftARBoundingBox box) {
 
-        //Log.d(TAG, "CONSTS: " + LEFT_SIDE + " " + TOP_SIDE + " " + RIGHT_SIDE + " " + BOTTOM_SIDE);
-        //Log.d(TAG, "PARAMS: " + (x0-dx) + " " + (y0-dy) + " " + (x0+dx) + " " + (y0+dy));
-    }
+        // Get dimensions
+        int w = cameraLayout.getWidth();
+        int h = cameraLayout.getHeight();
 
-    public void assignBoxPosition(RelativeLayout layout, CraftARBoundingBox box) {
-        int w = layout.getWidth();
-        int h = layout.getHeight();
+        // Calculate boundaries
+        float topSide = box.TLy * h;
+        float bottomSide = box.BLy * h;
+        float leftSide = box.TLx * w;
+        float rightSide = box.TRx * w;
 
-        TOP_SIDE = box.TLy * h;
-        BOTTOM_SIDE = box.BLy * h;
-        LEFT_SIDE = box.TLx * w;
-        RIGHT_SIDE = box.TRx * w;
+        // Assign new positions
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) overlayBody.getLayoutParams();
+        p.leftMargin = (int) (w * box.TLx);
+        p.topMargin = (int) (h * box.TLy);
+        p.width = (int) (rightSide - leftSide);
+        p.height = (int) (bottomSide - topSide);
+        overlayBody.setLayoutParams(p);
+        overlayHeader.bringToFront();
 
-        ImageView body = (ImageView) layout.findViewById(R.id.overlay_1);
-        TextView header = (TextView) layout.findViewById(R.id.component_name);
-
-        assignPosition(body, (int) (w * box.TLx), (int) (h * box.TLy), (int) (RIGHT_SIDE-LEFT_SIDE), (int) (BOTTOM_SIDE-TOP_SIDE));
-        header.bringToFront();
-
+        // Force repaint
         invalidate();
 
     }
 
-    public void assignPosition(View v, int x, int y, int w, int h) {
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) v.getLayoutParams();
-        p.leftMargin = x;
-        p.topMargin = y;
-        p.width = w;
-        p.height = h;
-        v.setLayoutParams(p);
+    public void setHeaderText(String text) {
+        if (overlayHeader != null) {
+            overlayHeader.setText(text);
+        }
     }
 
-    public void assignPosition(View v, int x, int y) {
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) v.getLayoutParams();
-        p.leftMargin = x;
-        p.topMargin = y;
-        v.setLayoutParams(p);
+    public void setDescriptionText(String text) {
+        if (overlayDescription != null) {
+            overlayDescription.setText(text);
+        }
+    }
+
+    public void setLayout(RelativeLayout layout) {
+        this.cameraLayout = layout;
+    }
+
+    public void setHeader(TextView header) {
+        this.overlayHeader = header;
+    }
+
+    public void setBody(ImageView body) {
+        this.overlayBody = body;
+    }
+
+    public void setDescription(TextView description) {
+        this.overlayDescription = description;
     }
 }
