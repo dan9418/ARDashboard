@@ -4,8 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,35 +22,41 @@ import static android.content.ContentValues.TAG;
 
 public class TrackingBox extends View {
 
-    public float LEFT_SIDE = 400;
-    public float RIGHT_SIDE = 800;
-    public float TOP_SIDE = 100;
-    public float BOTTOM_SIDE = 500;
+    public float LEFT_SIDE = 0;
+    public float RIGHT_SIDE = 0;
+    public float TOP_SIDE = 0;
+    public float BOTTOM_SIDE = 0;
     private Paint paint = new Paint();
+    private String title = "";
+    private String description = "";
 
-    TrackingBox(Context context) {
-        super(context);
+
+    public TrackingBox(Context context) {
+        this(context, null);
+    }
+
+    public TrackingBox(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public TrackingBox(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initPaints();
+    }
+
+    private void initPaints() {
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth(5);
     }
 
     @Override
     protected void onDraw(Canvas canvas) { // Override the onDraw() Method
         super.onDraw(canvas);
+        //canvas.drawRect(LEFT_SIDE, TOP_SIDE, RIGHT_SIDE, BOTTOM_SIDE, paint);
 
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.GREEN);
-        paint.setStrokeWidth(5);
-
-        //center
-        int x0 = canvas.getWidth()/2;
-        int y0 = canvas.getHeight()/2;
-        int dx = canvas.getHeight()/3;
-        int dy = canvas.getHeight()/3;
-        //draw guide box
-        //canvas.drawRect(x0-dx, y0-dy, x0+dx, y0+dy, paint);
-        canvas.drawRect(LEFT_SIDE, TOP_SIDE, RIGHT_SIDE, BOTTOM_SIDE, paint);
-
-        Log.d(TAG, "CONSTS: " + LEFT_SIDE + " " + TOP_SIDE + " " + RIGHT_SIDE + " " + BOTTOM_SIDE);
-        Log.d(TAG, "PARAMS: " + (x0-dx) + " " + (y0-dy) + " " + (x0+dx) + " " + (y0+dy));
+        //Log.d(TAG, "CONSTS: " + LEFT_SIDE + " " + TOP_SIDE + " " + RIGHT_SIDE + " " + BOTTOM_SIDE);
+        //Log.d(TAG, "PARAMS: " + (x0-dx) + " " + (y0-dy) + " " + (x0+dx) + " " + (y0+dy));
     }
 
     public void assignBoxPosition(RelativeLayout layout, CraftARBoundingBox box) {
@@ -58,26 +67,30 @@ public class TrackingBox extends View {
         BOTTOM_SIDE = box.BLy * h;
         LEFT_SIDE = box.TLx * w;
         RIGHT_SIDE = box.TRx * w;
+
+        ImageView body = (ImageView) layout.findViewById(R.id.overlay_1);
+        TextView header = (TextView) layout.findViewById(R.id.component_name);
+
+        assignPosition(body, (int) (w * box.TLx), (int) (h * box.TLy), (int) (RIGHT_SIDE-LEFT_SIDE), (int) (BOTTOM_SIDE-TOP_SIDE));
+        header.bringToFront();
+
         invalidate();
 
-        Log.d(TAG, "[" + w + "," + h + "]");
-        Log.d(TAG, "TL(" + box.TLx + "," + box.TLy + ") TR(" + box.TRx + "," + box.TRx + "), BL(" + box.BLx + "," + box.BLx + ") BR(" + box.BRx + "," + box.BRx + ")");
-
-        //Top Left
-        assignPosition((TextView) layout.findViewById(R.id.topLeft), (int) (w * box.TLx), (int) (h * box.TLy));
-        //Top Right
-        assignPosition((TextView) layout.findViewById(R.id.topRight), (int) (w * box.TRx), (int) (h * box.TRy));
-        //Bottom Left
-        assignPosition((TextView) layout.findViewById(R.id.bottomLeft), (int) (w * box.BLx), (int) (h * box.BLy));
-        //Bottom Right
-        assignPosition((TextView) layout.findViewById(R.id.bottomRight), (int) (w * box.BRx), (int) (h * box.BRy));
     }
 
-    public void assignPosition(TextView tv, int x, int y) {
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) tv.getLayoutParams();
+    public void assignPosition(View v, int x, int y, int w, int h) {
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) v.getLayoutParams();
         p.leftMargin = x;
         p.topMargin = y;
-        tv.setLayoutParams(p);
-        tv.setTextColor(Color.RED);
+        p.width = w;
+        p.height = h;
+        v.setLayoutParams(p);
+    }
+
+    public void assignPosition(View v, int x, int y) {
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) v.getLayoutParams();
+        p.leftMargin = x;
+        p.topMargin = y;
+        v.setLayoutParams(p);
     }
 }

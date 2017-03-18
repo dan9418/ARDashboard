@@ -2,8 +2,10 @@ package com.catchoom.test;
 
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.craftar.CraftARBoundingBox;
@@ -32,8 +34,9 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
     @Override
     public void onPostCreate() {
         //Set layout
-        View mainLayout = getLayoutInflater().inflate(R.layout.activity_continuous, null);
+        View mainLayout = getLayoutInflater().inflate(R.layout.camera_overlay, null);
         setContentView(mainLayout);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //Obtain an instance of the CraftARSDK (which manages the camera interaction).
         //Note we already called CraftARSDK.init() in the Splash Screen, so we don't have to do it again
@@ -69,7 +72,7 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
 
     //Called on button push
     private void restartFinder() {
-        Toast.makeText(getApplicationContext(), "Searching...", Toast.LENGTH_SHORT).show();
+        //.makeText(getApplicationContext(), "Searching...", Toast.LENGTH_SHORT).show();
         mCraftARSDK.startFinder();
     }
 
@@ -85,18 +88,17 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
 
                 int score = result.getScore();
                 Log.d(TAG, "Found item :"+result.getItem().getItemName());
-                Toast.makeText(getApplicationContext(), "Found: "+result.getItem().getItemName() +
-                        " ("+i+"/"+results.size()+")" +
-                        " Score="+score, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Found: "+result.getItem().getItemName() +" ("+i+"/"+results.size()+")" +" Score="+score, Toast.LENGTH_SHORT).show();
 
                 CraftARBoundingBox box = result.getBoundingBox();
-                RelativeLayout layout = (RelativeLayout)findViewById(R.id.activity_continuous);
+                RelativeLayout layout = (RelativeLayout)findViewById(R.id.camera_overlay);
+                ((TextView)findViewById(R.id.component_name)).setText(result.getItem().getItemName());
                 trackingBox.assignBoxPosition(layout, box);
             }
         }
         else {
             Log.e(TAG, "Nothing found");
-            Toast.makeText(getApplicationContext(), "Nothing found", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Nothing found", Toast.LENGTH_SHORT).show();
         }
         //mCraftARSDK.getCamera().restartCapture();
         restartFinder();
