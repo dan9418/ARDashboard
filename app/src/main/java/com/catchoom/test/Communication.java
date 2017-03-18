@@ -1,93 +1,148 @@
 package com.catchoom.test;
 
 import android.util.Log;
+import android.util.StringBuilderPrinter;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by van on 3/13/17.
+ * assumed naming convention tag_id ie. TC100_A1
  */
 
 public class Communication {
     String dstAddress;
     int dstPort;
-
+    SwitchGearInfo switchgear;
     Communication(String addr, int port) {
         dstAddress = addr;
         dstPort = port;
-    }
-    public SwitchGearInfo getSwitchgearInfo(){
         Client myClient = new Client(dstAddress,dstPort);
-
-            try {
-                String val = myClient.execute("Get all component names,number of components, locations, and powers").get();
-                Log.d("MyApp", val);
-                String[] vals = val.split(",");
-                String[] components = new String[Integer.valueOf(vals[1])];
-                int[] locations = new int[Integer.valueOf(vals[1])];
-                int[] powers = new int[Integer.valueOf(vals[1])];
-                int i, j;
-                for (i = 2; i < Integer.valueOf(vals[1])+2 ;i++) {
-                    components[i - 2] = vals[i];
-                }
-                for (j = i; j < Integer.valueOf(vals[1])+i ;j++){
-                    locations[j-i] = Integer.valueOf(vals[j]);
-                }
-                for (int t=j; t < Integer.valueOf(vals[1])+j ;t++){
-                    powers[t-j] = Integer.valueOf(vals[t]);
-                }
-                SwitchGearInfo switchgear = new SwitchGearInfo(vals[0], components, locations, powers);
-                return switchgear;
-            } catch(Exception e){
-            }
-        return null;
-
+        try {
+            String val = myClient.execute("SELECT * FROM nameTable").get();
+            Log.d("MyApp", val);
+            String[] components = val.split(",");
+            switchgear = new SwitchGearInfo(components);
+        } catch(Exception e){
+        }
     }
-    public Tc100 getTC100Info(String name){
+    public StringBuilder getInfo(String id){
+        StringBuilder display = new StringBuilder("");
+        if(id.equalsIgnoreCase("Switchgear")){
+            String [] components = switchgear.getComponents();
+            for(int i = 0; i<components.length; i++){
+                display.append(components[i]+"\n");
+            }
+            String [] tcnames = switchgear.findNames("TC100");
+            if(tcnames != null){
+             for(int i=1; i<tcnames.length; i++ ) {
+                 Client myClient = new Client(dstAddress, dstPort);
+                 try {
+                     String val = myClient.execute("SELECT * FROM TC100 where name = "+ tcnames[i]).get();
+                     String[] info = val.split(",");
+                     if(info[0].equals("True")){
+                         display.append(tcnames[i]+" : Alarm\n");
+                     } else {
+                         display.append(tcnames[i]+" : "+info[1]+"\n");
+                     }
+                 } catch (Exception e) {
+                    return new StringBuilder("");
+                 }
+             }
+         } else {
+             return new StringBuilder("");
+         }
+        }else {
+            String name = switchgear.findName(id);
+            if (name != null) {
+                String[] tags = name.split("_");
+                if (tags[0].equalsIgnoreCase("TC100")) {
+                  return getTC100Info(name);
+                } else if (tags[0].equalsIgnoreCase("PXM8000")) {
+                  return getPXM8000Info(name);
+                } else if (tags[0].equalsIgnoreCase("Meter")) {
+                    return getMeterInfo(name);
+                } else if (tags[0].equalsIgnoreCase("Magnum")) {
+                    return getMagnumInfo(name);
+                } else {
+                    return new StringBuilder("");
+                }
+            } else {
+                return new StringBuilder("");
+            }
+        }
+        return new StringBuilder("");
+    }
+    public StringBuilder getTC100Info(String name){
         Client myClient = new Client(dstAddress,dstPort);
 
         try {
-            String val = myClient.execute("From name Get Alarm and temperature").get();
+            String val = myClient.execute("SELECT * FROM TC100 where name = "+name).get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
             Tc100 tc= new Tc100(Boolean.valueOf(vals[0]), Integer.valueOf(vals[1]));
-            return tc;
+            if (tc.getAlarm()){
+                return new StringBuilder(name+" : Alarm");
+            }else{
+                return new StringBuilder(name+" : "+tc.getTemp());
+            }
+
         } catch(Exception e){
+            return new StringBuilder("");
         }
-        return null;
     }
-    public Pxm8000 getPXM8000Info(String name){
+    public StringBuilder getPXM8000Info(String name){
         Client myClient = new Client(dstAddress,dstPort);
         try {
-            String val = myClient.execute("From name Get 3phase current and voltage").get();
+            String val = myClient.execute("SELECT * FROM PXM8000 where name = "+name).get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
             Pxm8000 pxm= new Pxm8000(Integer.valueOf(vals[0]),Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]));
-            return pxm;
-        } catch(Exception e){
+            return  new StringBuilder(name+"\nLine 1 current : "+pxm.line1c+"\nLine 1 voltage : "+pxm.line1v+"\n" +
+                    "Line 2 current : "+pxm.line2c+
+                    "\nLine 2 voltage : "+pxm.line2v+"\nLine 3 current"+pxm.line3c+"\nLine 3 voltage"+pxm.line3v);
+        } catch(Exception e) {
+            return new StringBuilder("");
         }
-        return null;
     }
-    public Meter getMeterInfo(String name){
+    public StringBuilder getMeterInfo(String name){
         Client myClient = new Client(dstAddress,dstPort);
 
         try {
-            String val = myClient.execute("From name Get 3phase current and voltage").get();
+            String val = myClient.execute("SELECT * FROM Meter where name = "+name).get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
             Meter meters= new Meter(Integer.valueOf(vals[0]),Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]));
-            return meters;
+            return  new StringBuilder(name+"\nLine 1 current : "+meters.line1c+"\nLine 1 voltage : "+meters.line1v+"\n" +
+                    "Line 2 current : "+meters.line2c+
+                    "\nLine 2 voltage : "+meters.line2v+"\nLine 3 current"+meters.line3c+"\nLine 3 voltage"+meters.line3v);
         } catch(Exception e){
         }
         return null;
     }
-    public Magnum getMagnumInfo(String name){
+    public StringBuilder getMagnumInfo(String name){
         Client myClient = new Client(dstAddress,dstPort);
 
         try {
-            String val = myClient.execute("From name Get cause for trip,maintenance mode,status,3 phase current").get();
+            String val = myClient.execute("SELECT * FROM Meter where name = "+name).get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
             Magnum mag = new Magnum(vals[0], Boolean.valueOf(vals[1]), Boolean.valueOf(vals[2]), Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]));
-            return mag;
+            StringBuilder magnumbuilder = new StringBuilder(name);
+            if(!mag.getReason4trip().equals("")){
+                magnumbuilder.append("\nReason for trip : "+mag.getReason4trip());
+            }
+            if(mag.getMaintenace()){
+                magnumbuilder.append("\nMaintenance mode : On");
+            } else {
+                magnumbuilder.append("\nMaintenance mode : Off");
+            }
+            if(mag.status){
+                magnumbuilder.append("\nStatus : Open");
+            } else {
+                magnumbuilder.append("\nStatus : Close");
+            }
+            magnumbuilder.append("\nLine 1 current : "+mag.line1c+ "\nLine 2 current : "+mag.line2c+"\nLine 3 current"+mag.line3c);
         } catch(Exception e){
         }
         return null;

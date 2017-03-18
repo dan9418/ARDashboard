@@ -5,26 +5,36 @@ package com.catchoom.test;
  */
 
 public class SwitchGearInfo {
-    private String name;
     private String[] components;
-    private int[] locations;
-    private int[] powers;
-    public SwitchGearInfo(String name, String[] components, int[] locations, int[] powers){
-        this.name = name;
+    public SwitchGearInfo(String[] components){
         this.components= components;
-        this.locations=locations;
-        this.powers=powers;
-    }
-    public String getName(){
-        return name;
     }
     public String[] getComponents(){
         return components;
     }
-    public int[] getLocations(){
-        return locations;
+    public String findName(String id){
+        for (int i=0; i<components.length; i++){
+            String [] names = components[i].split("_");
+            if(names[1].equalsIgnoreCase(id)){
+                return components[i];
+            }
+        }
+        return null;
     }
-    public int[] getPowers(){
-        return powers;
+    public String[] findNames(String name){
+        String names = "names";
+        for (int i=0; i<components.length; i++){
+            String [] Allnames = components[i].split("_");
+            if(Allnames[0].equalsIgnoreCase(name)){
+               names=names+","+components[i];
+            }
+        }
+        try{
+            return names.split(",");
+        }catch (Exception e){
+            return null;
+        }
+
     }
+
 }
