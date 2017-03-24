@@ -23,16 +23,17 @@
             android:id="@+id/eaton_logo"
             android:src="@drawable/eaton_logo"
             android:adjustViewBounds="true"
-            android:layout_margin="10dp"
-            android:layout_width="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:layout_height="0px" />
+            android:layout_height="0px"
+            android:layout_width="match_parent"/>
 
-        <ImageView
-            android:id="@+id/welcome_image"
-            android:src="@drawable/welcome_text"
-            android:adjustViewBounds="true"
-            android:layout_margin="10dp"
+        <TextView
+            android:id="@+id/welcome_text"
+            android:text="Welcome to the AR Dashboard. Please select a mode of operation using the buttons to the right."
+            android:textSize="30dp"
+            android:textAlignment="center"
+            android:layout_margin="50dp"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="0px" />

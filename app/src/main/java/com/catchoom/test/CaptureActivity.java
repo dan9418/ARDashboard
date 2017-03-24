@@ -2,8 +2,11 @@ package com.catchoom.test;
 
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.craftar.CraftARBoundingBox;
@@ -19,22 +22,43 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class SingleShotActivity extends CraftARActivity implements CraftARSearchResponseHandler {
+public class CaptureActivity extends CraftARActivity implements CraftARSearchResponseHandler {
 
-    //Singleton classes
+    // Singleton classes
     CraftAROnDeviceIR mOnDeviceIR;
     CraftARSDK mCraftARSDK;
     CraftARCamera mCamera;
-    //Local variables
+    // Regular classes
     TrackingBox trackingBox;
-    View mainLayout;
 
     @Override
     public void onPostCreate() {
-        //Set layout
-        mainLayout = getLayoutInflater().inflate(R.layout.activity_single_shot, null);
+        View mainLayout = getLayoutInflater().inflate(R.layout.camera_overlay, null);
         setContentView(mainLayout);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        initializeCraftAR();
+        initializeTrackingBox();
+
+        // Hide capture button
+        final Button captureButton = (Button) findViewById(R.id.capture_button);
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startCapture();
+            }
+        });
+
+        // Show restart button, attach functionality, and start
+        final Button restartButton = (Button) findViewById(R.id.restart_button);
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                restartCapture();
+            }
+        });
+
+    }
+
+    private void initializeCraftAR() {
         //Obtain an instance of the CraftARSDK (which manages the camera interaction).
         //Note we already called CraftARSDK.init() in the Splash Screen, so we don't have to do it again
         mCraftARSDK = CraftARSDK.Instance();
@@ -53,61 +77,50 @@ public class SingleShotActivity extends CraftARActivity implements CraftARSearch
         //Obtain the reference to the camera, to be able to restart the camera, trigger focus etc.
         //Note that if you use single-shot, you will always have to obtain the reference to the camera to restart it after you take the snapshot.
         mCamera = mCraftARSDK.getCamera();
-
-        final Button captureButton = (Button) findViewById(R.id.capture_button);
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startSingleShot(v);
-            }
-        });
-
-        trackingBox = new TrackingBox(this);
-        addContentView(trackingBox, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
-
     }
 
-    //Called on button push
-    private void startSingleShot(View view) {
-        Toast.makeText(getApplicationContext(), "Capturing...", Toast.LENGTH_SHORT).show();
+    public void initializeTrackingBox() {
+        trackingBox = (TrackingBox) findViewById(R.id.tracking_box);
+        trackingBox.setLayout((RelativeLayout) findViewById(R.id.camera_overlay));
+        trackingBox.setHeader((TextView) findViewById(R.id.overlay_header));
+        trackingBox.setBody((ImageView) findViewById(R.id.overlay_body));
+        trackingBox.setDescription((TextView) findViewById(R.id.overlay_text));
+        trackingBox.reset();
+    }
+
+    private void startCapture() {
         mCraftARSDK.singleShotSearch();
     }
 
-    //Works for both Finder and Single Shot
+    private void restartCapture() {
+        trackingBox.reset();
+        mCraftARSDK.getCamera().restartCapture();
+    }
+
     public void searchResults(ArrayList<CraftARResult> results, long searchTimeMillis, int requestCode) {
         if(results.size() > 0){
             if(mCraftARSDK.isFinding()) {
                 mCraftARSDK.stopFinder();
             }
-            //for(int i=0; i<results.size(); i++){
-            for(int i=0; i<1; i++){
-                CraftARResult result = results.get(i);
+            CraftARResult result = results.get(0); // Top result
+            String name = result.getItem().getItemName();
+            CraftARBoundingBox box = result.getBoundingBox();
 
-                int score = result.getScore();
-                Log.d(TAG, "Found item :"+result.getItem().getItemName());
-                Toast.makeText(getApplicationContext(), "Found: "+result.getItem().getItemName() +
-                        " ("+i+"/"+results.size()+")" +
-                        " Score="+score, Toast.LENGTH_SHORT).show();
-
-                CraftARBoundingBox box = result.getBoundingBox();
-                RelativeLayout layout = (RelativeLayout)findViewById(R.id.activity_single_shot);
-                trackingBox.assignBoxPosition(layout, box);
-
-            }
+            Log.d(TAG, "Found :" + name);
+            trackingBox.setHeaderText(result.getItem().getItemName());
+            trackingBox.assignPosition(box);
         }
         else {
             Log.e(TAG, "Nothing found");
-            Toast.makeText(getApplicationContext(), "Nothing found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Nothing found ", Toast.LENGTH_SHORT).show();
         }
-        //mCraftARSDK.getCamera().restartCapture();
     }
-
-
 
     @Override
     public void searchFailed(CraftARError error, int requestCode) {
         Log.e(TAG, "Search failed( "+error.getErrorCode()+"):"+error.getErrorMessage());
-        Toast.makeText(getApplicationContext(), "Search Failed", Toast.LENGTH_SHORT).show();
-        mCraftARSDK.getCamera().restartCapture();
+        Toast.makeText(getApplicationContext(), "Search failed", Toast.LENGTH_SHORT).show();
+        startCapture();
     }
     @Override
     public void onCameraOpenFailed(){
@@ -118,10 +131,6 @@ public class SingleShotActivity extends CraftARActivity implements CraftARSearch
     @Override
     public void onPreviewStarted(int i, int i1) {
         Log.d(TAG, "Preview started");
-    }
-
-    private void startCraftARActivity(){
-        Log.d(TAG, "Starting CraftARActivity");
     }
 
 }

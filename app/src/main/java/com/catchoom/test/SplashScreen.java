@@ -1,13 +1,11 @@
 package com.catchoom.test;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -72,7 +70,7 @@ public class SplashScreen extends AppCompatActivity implements ImageRecognition.
     }
 
     private void launchSingleShot(View view) {
-        Intent intent = new Intent(this, SingleShotActivity.class);
+        Intent intent = new Intent(this, CaptureActivity.class);
         startActivity(intent);
     }
 
@@ -107,7 +105,6 @@ public class SplashScreen extends AppCompatActivity implements ImageRecognition.
     @Override
     public void syncSuccessful(CraftAROnDeviceCollection craftAROnDeviceCollection) {
         Log.d(TAG, "Sync successful");
-        //startCraftARActivity();
     }
 
     @Override
@@ -117,7 +114,7 @@ public class SplashScreen extends AppCompatActivity implements ImageRecognition.
 
     @Override
     public void syncProgress(CraftAROnDeviceCollection craftAROnDeviceCollection, float progress) {
-        Log.e(TAG, "syncProgress : "+progress);
+        Log.d(TAG, "syncProgress : "+progress);
     }
 
     @Override
