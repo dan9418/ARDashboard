@@ -19,7 +19,7 @@ public class Communication {
         dstPort = port;
         Client myClient = new Client(dstAddress,dstPort);
         try {
-            String val = myClient.execute("SELECT * FROM nameTable").get();
+            String val = myClient.execute("SELECT * FROM NAME;").get();
             Log.d("MyApp", val);
             String[] components = val.split(",");
             switchgear = new SwitchGearInfo(components);
@@ -38,9 +38,9 @@ public class Communication {
              for(int i=1; i<tcnames.length; i++ ) {
                  Client myClient = new Client(dstAddress, dstPort);
                  try {
-                     String val = myClient.execute("SELECT * FROM TC100 where name = "+ tcnames[i]).get();
+                     String val = myClient.execute("SELECT * FROM TC100 WHERE NAME = '"+ tcnames[i]+"';").get();
                      String[] info = val.split(",");
-                     if(info[0].equals("True")){
+                     if(info[1].equals("1")){
                          display.append(tcnames[i]+" : Alarm\n");
                      } else {
                          display.append(tcnames[i]+" : "+info[1]+"\n");
@@ -77,10 +77,10 @@ public class Communication {
         Client myClient = new Client(dstAddress,dstPort);
 
         try {
-            String val = myClient.execute("SELECT * FROM TC100 where name = "+name).get();
+            String val = myClient.execute("SELECT * FROM TC100 WHERE NAME = '"+name+"';").get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
-            Tc100 tc= new Tc100(Boolean.valueOf(vals[0]), Integer.valueOf(vals[1]));
+            Tc100 tc= new Tc100(Boolean.valueOf(vals[1]), Integer.valueOf(vals[2]));
             if (tc.getAlarm()){
                 return new StringBuilder(name+" : Alarm");
             }else{
@@ -94,10 +94,10 @@ public class Communication {
     public StringBuilder getPXM8000Info(String name){
         Client myClient = new Client(dstAddress,dstPort);
         try {
-            String val = myClient.execute("SELECT * FROM PXM8000 where name = "+name).get();
+            String val = myClient.execute("SELECT * FROM PXM8000 WHERE NAME = '"+name+"';").get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
-            Pxm8000 pxm= new Pxm8000(Integer.valueOf(vals[0]),Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]));
+            Pxm8000 pxm= new Pxm8000(Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]),Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
             return  new StringBuilder(name+"\nLine 1 current : "+pxm.line1c+"\nLine 1 voltage : "+pxm.line1v+"\n" +
                     "Line 2 current : "+pxm.line2c+
                     "\nLine 2 voltage : "+pxm.line2v+"\nLine 3 current"+pxm.line3c+"\nLine 3 voltage"+pxm.line3v);
@@ -109,10 +109,10 @@ public class Communication {
         Client myClient = new Client(dstAddress,dstPort);
 
         try {
-            String val = myClient.execute("SELECT * FROM Meter where name = "+name).get();
+            String val = myClient.execute("SELECT * FROM METER WHERE NAME = '"+name+"';").get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
-            Meter meters= new Meter(Integer.valueOf(vals[0]),Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]));
+            Meter meters= new Meter(Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]),Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
             return  new StringBuilder(name+"\nLine 1 current : "+meters.line1c+"\nLine 1 voltage : "+meters.line1v+"\n" +
                     "Line 2 current : "+meters.line2c+
                     "\nLine 2 voltage : "+meters.line2v+"\nLine 3 current"+meters.line3c+"\nLine 3 voltage"+meters.line3v);
@@ -124,25 +124,25 @@ public class Communication {
         Client myClient = new Client(dstAddress,dstPort);
 
         try {
-            String val = myClient.execute("SELECT * FROM Meter where name = "+name).get();
+            String val = myClient.execute("SELECT * FROM MAGNUM WHERE NAME = '"+name+"';").get();
             Log.d("MyApp", val);
             String[] vals = val.split(",");
-            Magnum mag = new Magnum(vals[0], Boolean.valueOf(vals[1]), Boolean.valueOf(vals[2]), Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]));
+            Magnum mag = new Magnum(vals[1], Integer.valueOf(vals[2]), Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
             StringBuilder magnumbuilder = new StringBuilder(name);
             if(!mag.getReason4trip().equals("")){
                 magnumbuilder.append("\nReason for trip : "+mag.getReason4trip());
             }
-            if(mag.getMaintenace()){
+            if(mag.getMaintenace() == 1){
                 magnumbuilder.append("\nMaintenance mode : On");
             } else {
                 magnumbuilder.append("\nMaintenance mode : Off");
             }
-            if(mag.status){
+            if(mag.getStatus() == 1){
                 magnumbuilder.append("\nStatus : Open");
             } else {
                 magnumbuilder.append("\nStatus : Close");
             }
-            magnumbuilder.append("\nLine 1 current : "+mag.line1c+ "\nLine 2 current : "+mag.line2c+"\nLine 3 current"+mag.line3c);
+            magnumbuilder.append("\nLine 1 current : "+mag.getLine1c()+ "\nLine 2 current : "+mag.getLine2c()+"\nLine 3 current"+mag.getLine3c());
         } catch(Exception e){
         }
         return null;

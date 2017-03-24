@@ -6,12 +6,12 @@ package com.catchoom.test;
 
 public class Magnum {
     String reason4trip;
-    boolean maintenance;
-    boolean status;
+    int maintenance;
+    int status;
     int line1c;
     int line2c;
     int line3c;
-    public Magnum(String reason4trip, boolean maintenance, boolean status,  int line1c,  int line2c, int line3c){
+    public Magnum(String reason4trip, int maintenance, int status,  int line1c,  int line2c, int line3c){
 
         this.reason4trip=reason4trip;
         this.maintenance = maintenance;
@@ -23,10 +23,10 @@ public class Magnum {
     public String getReason4trip(){
         return reason4trip;
     }
-    public boolean getMaintenace(){
+    public int getMaintenace(){
         return maintenance;
     }
-    public boolean getStatus(){
+    public int getStatus(){
         return status;
     }
     public int getLine1c(){
