@@ -18,7 +18,7 @@ import com.craftar.ImageRecognition;
 
 import static android.content.ContentValues.TAG;
 
-public class SplashScreen extends AppCompatActivity implements ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
+public class SplashScreenActivity extends AppCompatActivity implements ImageRecognition.SetOnDeviceCollectionListener, CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
 
     CraftAROnDeviceIR mCraftAROnDeviceIR;
     CraftAROnDeviceCollectionManager mCollectionManager;

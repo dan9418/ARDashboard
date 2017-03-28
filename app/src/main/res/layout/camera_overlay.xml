@@ -4,7 +4,7 @@
     android:id="@+id/camera_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.catchoom.test.SplashScreen">
+    tools:context="com.catchoom.test.SplashScreenActivity">
 
     <com.craftar.CraftARCameraView
         android:id="@+id/camera_preview"

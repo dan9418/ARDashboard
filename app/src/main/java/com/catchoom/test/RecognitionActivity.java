@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.catchoom.test.communication.Communication;
 import com.craftar.CraftARBoundingBox;
 import com.craftar.CraftARCamera;
 import com.craftar.CraftARError;
@@ -168,7 +169,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
             trackingBox.assignPosition(box);
 
             if(itemName.equals("Switchgear")) {
-                databaseLink = new Communication("10.10.0.1", 8888);
+                databaseLink = new Communication(Global.ADDRESS, Global.PORT);
                 itemText = databaseLink.getInfo(itemName).toString();
             }
             else {

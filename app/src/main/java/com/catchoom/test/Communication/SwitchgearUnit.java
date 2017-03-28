@@ -1,4 +1,4 @@
-package com.catchoom.test;
+package com.catchoom.test.communication;
 
 /**
  * Created by Dan on 3/14/2017.

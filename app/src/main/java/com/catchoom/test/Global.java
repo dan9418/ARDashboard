@@ -6,9 +6,12 @@ package com.catchoom.test;
 
 public class Global {
 
-    public enum CAMERA_MODE {
+    public static enum CAMERA_MODE {
         CONTINOUS,
         CAPTURE
     }
+
+    public static String ADDRESS = "10.10.0.1";
+    public static int PORT = 8888;
 
 }

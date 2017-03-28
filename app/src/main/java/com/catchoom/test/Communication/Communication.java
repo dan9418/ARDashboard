@@ -1,9 +1,6 @@
-package com.catchoom.test;
+package com.catchoom.test.communication;
 
 import android.util.Log;
-import android.util.StringBuilderPrinter;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by van on 3/13/17.
@@ -14,7 +11,7 @@ public class Communication {
     String dstAddress;
     int dstPort;
     SwitchGearInfo switchgear;
-    Communication(String addr, int port) {
+    public Communication(String addr, int port) {
         dstAddress = addr;
         dstPort = port;
         Client myClient = new Client(dstAddress,dstPort);
