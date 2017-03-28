@@ -30,7 +30,8 @@
         android:textStyle="bold"
         android:textColor="@android:color/white"
         android:background="@android:color/black"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textSize="24sp" />
 
     <ImageView
         android:id="@+id/overlay_body"
@@ -43,8 +44,14 @@
         android:text="Description"
         android:id="@+id/overlay_text"
         android:textColor="@android:color/white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/overlay_body"
+        android:layout_alignLeft="@+id/overlay_body"
+        android:layout_alignTop="@+id/overlay_header"
+        android:padding="100dp"
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
     <Button
         android:text="Capture"

@@ -100,7 +100,7 @@ public class Communication {
             Pxm8000 pxm= new Pxm8000(Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]),Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
             return  new StringBuilder(name+"\nLine 1 current : "+pxm.line1c+"\nLine 1 voltage : "+pxm.line1v+"\n" +
                     "Line 2 current : "+pxm.line2c+
-                    "\nLine 2 voltage : "+pxm.line2v+"\nLine 3 current"+pxm.line3c+"\nLine 3 voltage"+pxm.line3v);
+                    "\nLine 2 voltage : "+pxm.line2v+"\nLine 3 current : "+pxm.line3c+"\nLine 3 voltage : "+pxm.line3v);
         } catch(Exception e) {
             return new StringBuilder("");
         }
@@ -115,7 +115,7 @@ public class Communication {
             Meter meters= new Meter(Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]),Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
             return  new StringBuilder(name+"\nLine 1 current : "+meters.line1c+"\nLine 1 voltage : "+meters.line1v+"\n" +
                     "Line 2 current : "+meters.line2c+
-                    "\nLine 2 voltage : "+meters.line2v+"\nLine 3 current"+meters.line3c+"\nLine 3 voltage"+meters.line3v);
+                    "\nLine 2 voltage : "+meters.line2v+"\nLine 3 current : "+meters.line3c+"\nLine 3 voltage : "+meters.line3v);
         } catch(Exception e){
         }
         return null;

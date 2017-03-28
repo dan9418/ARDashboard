@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class ContinuousActivity extends CraftARActivity implements CraftARSearchResponseHandler {
+public class RecognitionActivity extends CraftARActivity implements CraftARSearchResponseHandler {
 
     // Singleton classes
     CraftAROnDeviceIR mOnDeviceIR;
@@ -30,6 +30,8 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
     CraftARCamera mCamera;
     // Regular classes
     TrackingBox trackingBox;
+    Communication databaseLink;
+    Global.CAMERA_MODE MODE;
 
     @Override
     public void onPostCreate() {
@@ -37,9 +39,43 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
         setContentView(mainLayout);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        MODE = Global.CAMERA_MODE.valueOf(getIntent().getStringExtra("MODE"));
+
         initializeCraftAR();
         initializeTrackingBox();
 
+        if(MODE == Global.CAMERA_MODE.CONTINOUS) {
+            initializeContinuousUI();
+            startFinder();
+        }
+        else if (MODE == Global.CAMERA_MODE.CAPTURE) {
+            initializeCaptureUI();
+        }
+        else {
+            Log.e(TAG, "Invalid mode");
+        }
+
+    }
+
+    private void initializeCaptureUI() {
+        /// Hide capture button
+        final Button captureButton = (Button) findViewById(R.id.capture_button);
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startCapture();
+            }
+        });
+
+        // Show restart button, attach functionality, and start
+        final Button restartButton = (Button) findViewById(R.id.restart_button);
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                restartCapture();
+            }
+        });
+    }
+
+    private void initializeContinuousUI() {
         // Hide capture button
         final Button captureButton = (Button) findViewById(R.id.capture_button);
         captureButton.setVisibility(View.GONE);
@@ -51,7 +87,6 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
                 startFinder();
             }
         });
-        startFinder();
     }
 
     private void initializeCraftAR() {
@@ -88,7 +123,16 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
         mCraftARSDK.startFinder();
     }
 
-    public void searchResults(ArrayList<CraftARResult> results, long searchTimeMillis, int requestCode) {
+    private void startCapture() {
+        mCraftARSDK.singleShotSearch();
+    }
+
+    private void restartCapture() {
+        trackingBox.reset();
+        mCraftARSDK.getCamera().restartCapture();
+    }
+
+    public void captureSearchResults(ArrayList<CraftARResult> results) {
         if(results.size() > 0){
             if(mCraftARSDK.isFinding()) {
                 mCraftARSDK.stopFinder();
@@ -100,12 +144,64 @@ public class ContinuousActivity extends CraftARActivity implements CraftARSearch
             Log.d(TAG, "Found :" + name);
             trackingBox.setHeaderText(result.getItem().getItemName());
             trackingBox.assignPosition(box);
+        }
+        else {
+            Log.e(TAG, "Nothing found");
+            Toast.makeText(getApplicationContext(), "Nothing found ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void continuousSearchResults(ArrayList<CraftARResult> results) {
+        if(results.size() > 0){
+            if(mCraftARSDK.isFinding()) {
+                mCraftARSDK.stopFinder();
+            }
+            CraftARResult result = results.get(0); // Top result
+            String name = result.getItem().getItemName();
+            CraftARBoundingBox box = result.getBoundingBox();
+
+            String itemName = result.getItem().getItemName();
+            String itemText = "n/a";
+
+            Log.d(TAG, "Found :" + name);
+            trackingBox.setHeaderText(itemName);
+            trackingBox.assignPosition(box);
+
+            if(itemName.equals("Switchgear")) {
+                databaseLink = new Communication("10.10.0.1", 8888);
+                itemText = databaseLink.getInfo(itemName).toString();
+            }
+            else {
+                try {
+                    itemText = databaseLink.getInfo(itemName).toString();
+                }
+                catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+
+            Log.e(TAG, itemText);
+
+            //trackingBox.setDescriptionText(itemText);
+            trackingBox.setDescriptionText("sample text\nayyyyyeeee\nhello world\neieioooooo");
 
         }
         else {
             Log.e(TAG, "Nothing found");
         }
         startFinder();
+    }
+
+    public void searchResults(ArrayList<CraftARResult> results, long searchTimeMillis, int requestCode) {
+        if(MODE == Global.CAMERA_MODE.CONTINOUS) {
+            continuousSearchResults(results);
+        }
+        else if (MODE == Global.CAMERA_MODE.CAPTURE) {
+            captureSearchResults(results);
+        }
+        else {
+            Log.e(TAG, "Invalid mode");
+        }
     }
 
     @Override

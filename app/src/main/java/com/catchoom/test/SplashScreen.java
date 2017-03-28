@@ -33,7 +33,7 @@ public class SplashScreen extends AppCompatActivity implements ImageRecognition.
         final ImageButton button_single_shot = (ImageButton) findViewById(R.id.capture_button);
         button_single_shot.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                launchSingleShot(v);
+                launchCapture(v);
             }
         });
 
@@ -69,13 +69,15 @@ public class SplashScreen extends AppCompatActivity implements ImageRecognition.
         mCraftAROnDeviceIR.setCollection(collection, true, this);
     }
 
-    private void launchSingleShot(View view) {
-        Intent intent = new Intent(this, CaptureActivity.class);
+    private void launchCapture(View view) {
+        Intent intent = new Intent(this, RecognitionActivity.class);
+        intent.putExtra("MODE", Global.CAMERA_MODE.CAPTURE.toString());
         startActivity(intent);
     }
 
     private void launchContinuous(View view) {
-        Intent intent = new Intent(this, ContinuousActivity.class);
+        Intent intent = new Intent(this, RecognitionActivity.class);
+        intent.putExtra("MODE", Global.CAMERA_MODE.CONTINOUS.toString());
         startActivity(intent);
     }
 

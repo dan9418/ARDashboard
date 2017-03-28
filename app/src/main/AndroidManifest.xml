@@ -25,7 +25,7 @@
             android:name=".HelpActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".ContinuousActivity"
+            android:name=".RecognitionActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".CaptureActivity"
