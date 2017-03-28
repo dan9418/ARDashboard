@@ -1,31 +1,24 @@
 package com.catchoom.test;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.craftar.CraftARBoundingBox;
 
-public class TrackingBox extends View {
+public class TrackingBox {
 
     TextView overlayHeader;
     ImageView overlayBody;
     TextView overlayDescription;
     RelativeLayout cameraLayout;
 
-    public TrackingBox(Context context) {
-        this(context, null);
-    }
-
-    public TrackingBox(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public TrackingBox(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public TrackingBox(RelativeLayout layout, ImageView body, TextView header, TextView description) {
+        cameraLayout = layout;
+        overlayHeader = header;
+        overlayBody = body;
+        overlayDescription = description;
+        reset();
     }
 
     public void reset() {
@@ -35,7 +28,6 @@ public class TrackingBox extends View {
         p.width = 0;
         p.height = 0;
         overlayBody.setLayoutParams(p);
-        invalidate();
     }
 
     public void assignPosition(CraftARBoundingBox box) {
@@ -60,7 +52,7 @@ public class TrackingBox extends View {
         overlayHeader.bringToFront();
 
         // Force repaint
-        invalidate();
+        overlayBody.invalidate();
 
     }
 
@@ -76,19 +68,4 @@ public class TrackingBox extends View {
         }
     }
 
-    public void setLayout(RelativeLayout layout) {
-        this.cameraLayout = layout;
-    }
-
-    public void setHeader(TextView header) {
-        this.overlayHeader = header;
-    }
-
-    public void setBody(ImageView body) {
-        this.overlayBody = body;
-    }
-
-    public void setDescription(TextView description) {
-        this.overlayDescription = description;
-    }
 }

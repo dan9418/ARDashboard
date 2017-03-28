@@ -6,7 +6,7 @@ package com.catchoom.test;
 
 public class Global {
 
-    public static enum CAMERA_MODE {
+    public enum CAMERA_MODE {
         CONTINOUS,
         CAPTURE
     }

@@ -55,11 +55,10 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         else {
             Log.e(TAG, "Invalid mode");
         }
-
     }
 
     private void initializeCaptureUI() {
-        /// Hide capture button
+        /// Show capture button
         final Button captureButton = (Button) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -74,6 +73,19 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
                 restartCapture();
             }
         });
+    }
+
+    private void startFinder() {
+        mCraftARSDK.startFinder();
+    }
+
+    private void startCapture() {
+        mCraftARSDK.singleShotSearch();
+    }
+
+    private void restartCapture() {
+        trackingBox.reset();
+        mCraftARSDK.getCamera().restartCapture();
     }
 
     private void initializeContinuousUI() {
@@ -112,25 +124,24 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     }
 
     public void initializeTrackingBox() {
-        trackingBox = (TrackingBox) findViewById(R.id.tracking_box);
-        trackingBox.setLayout((RelativeLayout) findViewById(R.id.camera_overlay));
-        trackingBox.setHeader((TextView) findViewById(R.id.overlay_header));
-        trackingBox.setBody((ImageView) findViewById(R.id.overlay_body));
-        trackingBox.setDescription((TextView) findViewById(R.id.overlay_text));
-        trackingBox.reset();
+        trackingBox = new TrackingBox(
+                (RelativeLayout) findViewById(R.id.camera_overlay),
+                (ImageView) findViewById(R.id.overlay_body),
+                (TextView) findViewById(R.id.overlay_header),
+                (TextView) findViewById(R.id.overlay_text)
+        );
     }
 
-    private void startFinder() {
-        mCraftARSDK.startFinder();
-    }
-
-    private void startCapture() {
-        mCraftARSDK.singleShotSearch();
-    }
-
-    private void restartCapture() {
-        trackingBox.reset();
-        mCraftARSDK.getCamera().restartCapture();
+    public void searchResults(ArrayList<CraftARResult> results, long searchTimeMillis, int requestCode) {
+        if(MODE == Global.CAMERA_MODE.CONTINOUS) {
+            continuousSearchResults(results);
+        }
+        else if (MODE == Global.CAMERA_MODE.CAPTURE) {
+            captureSearchResults(results);
+        }
+        else {
+            Log.e(TAG, "Invalid mode");
+        }
     }
 
     public void captureSearchResults(ArrayList<CraftARResult> results) {
@@ -193,18 +204,6 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         startFinder();
     }
 
-    public void searchResults(ArrayList<CraftARResult> results, long searchTimeMillis, int requestCode) {
-        if(MODE == Global.CAMERA_MODE.CONTINOUS) {
-            continuousSearchResults(results);
-        }
-        else if (MODE == Global.CAMERA_MODE.CAPTURE) {
-            captureSearchResults(results);
-        }
-        else {
-            Log.e(TAG, "Invalid mode");
-        }
-    }
-
     @Override
     public void searchFailed(CraftARError error, int requestCode) {
         Log.e(TAG, "Search failed( "+error.getErrorCode()+"):"+error.getErrorMessage());
@@ -219,6 +218,12 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     @Override
     public void onPreviewStarted(int i, int i1) {
         Log.d(TAG, "Preview started");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        trackingBox.reset();
     }
 
 }
