@@ -11,7 +11,8 @@ public class Global {
         CAPTURE
     }
 
-    public static String ADDRESS = "10.10.0.1";
-    public static int PORT = 8888;
+    public static String SWITCHGEAR_NAME = "Switchgear";
+    public static String SWITCHGEAR_ADDRESS = "10.10.0.1";
+    public static int SWITCHGEAR_PORT = 8888;
 
 }

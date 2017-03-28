@@ -42,6 +42,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
 
         MODE = Global.CAMERA_MODE.valueOf(getIntent().getStringExtra("MODE"));
 
+        databaseLink = new Communication(Global.SWITCHGEAR_ADDRESS, Global.SWITCHGEAR_PORT);
         initializeCraftAR();
         initializeTrackingBox();
 
@@ -154,21 +155,14 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
             trackingBox.setHeaderText(itemName);
             trackingBox.assignPosition(box);
 
-            if(itemName.equals("Switchgear")) {
-                databaseLink = new Communication(Global.ADDRESS, Global.PORT);
-                itemText = databaseLink.getInfo(itemName).toString();
+            try {
+                //itemText = databaseLink.getInfo(itemName).toString();
             }
-            else {
-                try {
-                    itemText = databaseLink.getInfo(itemName).toString();
-                }
-                catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
+            catch (Exception e) {
+                Log.e(TAG, e.getMessage());
             }
 
-            //trackingBox.setDescriptionText(itemText);
-            trackingBox.setDescriptionText("sample text\nayyyyyeeee\nhello world\neieioooooo");
+            trackingBox.setDescriptionText(itemText);
 
             if(MODE == Global.CAMERA_MODE.CONTINOUS) {
                 startFinder();
