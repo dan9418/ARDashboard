@@ -1,8 +1,8 @@
 package com.catchoom.test;
 
+import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.craftar.CraftARBoundingBox;
 
@@ -21,15 +21,6 @@ public class TrackingBox {
         reset();
     }
 
-    public void reset() {
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) overlayBody.getLayoutParams();
-        p.leftMargin = 0;
-        p.topMargin = 0;
-        p.width = 0;
-        p.height = 0;
-        overlayBody.setLayoutParams(p);
-    }
-
     public void assignPosition(CraftARBoundingBox box) {
 
         // Get dimensions
@@ -44,8 +35,8 @@ public class TrackingBox {
 
         // Assign new positions
         RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) overlayBody.getLayoutParams();
-        p.leftMargin = (int) (w * box.TLx);
-        p.topMargin = (int) (h * box.TLy);
+        p.leftMargin = (int) leftSide;
+        p.topMargin = (int) topSide;
         p.width = (int) (rightSide - leftSide);
         p.height = (int) (bottomSide - topSide);
         overlayBody.setLayoutParams(p);
@@ -53,7 +44,15 @@ public class TrackingBox {
 
         // Force repaint
         overlayBody.invalidate();
+    }
 
+    public void reset() {
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) overlayBody.getLayoutParams();
+        p.leftMargin = 0;
+        p.topMargin = 0;
+        p.width = 0;
+        p.height = 0;
+        overlayBody.setLayoutParams(p);
     }
 
     public void setHeaderText(String text) {

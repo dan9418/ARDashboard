@@ -45,6 +45,10 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         initializeCraftAR();
         initializeTrackingBox();
 
+        if(mCraftARSDK.isFinding()) {
+            mCraftARSDK.stopFinder();
+        }
+
         if(MODE == Global.CAMERA_MODE.CONTINOUS) {
             initializeContinuousUI();
             startFinder();
@@ -133,49 +137,20 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     }
 
     public void searchResults(ArrayList<CraftARResult> results, long searchTimeMillis, int requestCode) {
-        if(MODE == Global.CAMERA_MODE.CONTINOUS) {
-            continuousSearchResults(results);
-        }
-        else if (MODE == Global.CAMERA_MODE.CAPTURE) {
-            captureSearchResults(results);
-        }
-        else {
-            Log.e(TAG, "Invalid mode");
-        }
-    }
 
-    public void captureSearchResults(ArrayList<CraftARResult> results) {
         if(results.size() > 0){
+
             if(mCraftARSDK.isFinding()) {
                 mCraftARSDK.stopFinder();
             }
-            CraftARResult result = results.get(0); // Top result
-            String name = result.getItem().getItemName();
-            CraftARBoundingBox box = result.getBoundingBox();
 
-            Log.d(TAG, "Found :" + name);
-            trackingBox.setHeaderText(result.getItem().getItemName());
-            trackingBox.assignPosition(box);
-        }
-        else {
-            Log.e(TAG, "Nothing found");
-            Toast.makeText(getApplicationContext(), "Nothing found ", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void continuousSearchResults(ArrayList<CraftARResult> results) {
-        if(results.size() > 0){
-            if(mCraftARSDK.isFinding()) {
-                mCraftARSDK.stopFinder();
-            }
             CraftARResult result = results.get(0); // Top result
-            String name = result.getItem().getItemName();
             CraftARBoundingBox box = result.getBoundingBox();
 
             String itemName = result.getItem().getItemName();
             String itemText = "n/a";
 
-            Log.d(TAG, "Found :" + name);
+            Log.d(TAG, "Found :" + itemName);
             trackingBox.setHeaderText(itemName);
             trackingBox.assignPosition(box);
 
@@ -192,16 +167,18 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
                 }
             }
 
-            Log.e(TAG, itemText);
-
             //trackingBox.setDescriptionText(itemText);
             trackingBox.setDescriptionText("sample text\nayyyyyeeee\nhello world\neieioooooo");
+
+            if(MODE == Global.CAMERA_MODE.CONTINOUS) {
+                startFinder();
+            }
 
         }
         else {
             Log.e(TAG, "Nothing found");
         }
-        startFinder();
+
     }
 
     @Override
@@ -209,6 +186,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         Log.e(TAG, "Search failed( "+error.getErrorCode()+"):"+error.getErrorMessage());
         Toast.makeText(getApplicationContext(), "Search failed", Toast.LENGTH_SHORT).show();
     }
+
     @Override
     public void onCameraOpenFailed(){
         Log.e(TAG, "Camera failed to open");
@@ -216,14 +194,9 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     }
 
     @Override
-    public void onPreviewStarted(int i, int i1) {
+    public void onPreviewStarted(int width, int height) {
         Log.d(TAG, "Preview started");
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        trackingBox.reset();
-    }
 
 }
