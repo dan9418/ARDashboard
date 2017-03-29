@@ -1,6 +1,7 @@
 package com.catchoom.test;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -47,7 +48,6 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
             Log.e(TAG, e.getMessage());
         }
 
-
         // Initialize recognition/tracking components
         initializeCraftAR();
         initializeTrackingBox();
@@ -78,7 +78,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     // UI initialization method
 
     private void initializeUI() {
-        /// Show capture button and set onClick listener
+        /// Set onClick listeners
         final Button captureButton = (Button) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -86,11 +86,21 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
             }
         });
 
-        // Show restart button and set onClick listener
         final Button restartButton = (Button) findViewById(R.id.restart_button);
         restartButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 restart();
+            }
+        });
+
+
+        final View cameraLayout = findViewById(R.id.camera_overlay);
+        cameraLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Toast.makeText(getApplicationContext(), "Focusing...", Toast.LENGTH_SHORT).show();
+                mCamera.triggerAutoFocus();
+                return true;
             }
         });
     }
@@ -116,6 +126,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         //Obtain the reference to the camera, to be able to restart the camera, trigger focus, etc...
         //Note that if you use capture mode, you will always have to obtain the reference to the camera to restart it after you take the snapshot.
         mCamera = mCraftARSDK.getCamera();
+        mCamera.setAutoFocusOnTouch(true);
     }
 
     public void initializeTrackingBox() {
@@ -139,10 +150,11 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
             CraftARBoundingBox box = result.getBoundingBox();
 
             String itemName = result.getItem().getItemName();
-            String itemText = "n/a";
+            String itemText = "N/A";
+            int itemScore = result.getScore();
 
             Log.d(TAG, "Found :" + itemName);
-            trackingBox.setHeaderText(itemName);
+            trackingBox.setHeaderText(itemName, itemScore);
             trackingBox.assignPosition(box);
 
             try {

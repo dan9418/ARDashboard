@@ -7,4 +7,6 @@
     <string name="restart">Restart</string>
     <string name="description">Description</string>
     <string name="ard">Augmented Reality Dashboard</string>
+    <string name="not_available">N/A</string>
+    <string name="title">Title</string>
 </resources>

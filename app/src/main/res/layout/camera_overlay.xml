@@ -4,6 +4,9 @@
     android:id="@+id/camera_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="com.catchoom.test.SplashScreenActivity">
 
     <com.craftar.CraftARCameraView
@@ -13,18 +16,34 @@
         android:layout_centerInParent="true" >
     </com.craftar.CraftARCameraView>
 
+    <!--Overlay Components-->
+
     <TextView
+        android:id="@+id/overlay_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/overlay_body"
         android:layout_alignLeft="@+id/overlay_body"
         android:layout_alignTop="@+id/overlay_body"
-        android:id="@+id/overlay_header"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
         android:background="@android:color/black"
+        android:text="@string/title"
+        android:textColor="@android:color/white"
         android:textAlignment="center"
-        android:textSize="24sp" />
+        android:textSize="30sp"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/overlay_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/overlay_body"
+        android:layout_alignLeft="@+id/overlay_body"
+        android:layout_alignTop="@+id/overlay_header"
+        android:text="@string/not_available"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:padding="100dp" />
 
     <ImageView
         android:id="@+id/overlay_body"
@@ -33,18 +52,7 @@
         android:src="@drawable/overlay_body_background">
     </ImageView>
 
-    <TextView
-        android:text="@string/description"
-        android:id="@+id/overlay_text"
-        android:textColor="@android:color/white"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/overlay_body"
-        android:layout_alignLeft="@+id/overlay_body"
-        android:layout_alignTop="@+id/overlay_header"
-        android:padding="100dp"
-        android:textAlignment="center"
-        android:textSize="18sp" />
+    <!--Control Buttons-->
 
     <Button
         android:id="@+id/capture_button"

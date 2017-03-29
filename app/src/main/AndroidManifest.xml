@@ -26,7 +26,8 @@
             android:name=".HelpActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".RecognitionActivity" />
+            android:name=".RecognitionActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package com.catchoom.test;
 
+import android.os.Build;
+import android.text.Html;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -55,9 +57,14 @@ public class TrackingBox {
         overlayBody.setLayoutParams(p);
     }
 
-    public void setHeaderText(String text) {
+    public void setHeaderText(String text, int score) {
         if (overlayHeader != null) {
-            overlayHeader.setText(text);
+            if (Build.VERSION.SDK_INT >= 24) {
+                overlayHeader.setText(Html.fromHtml("<b>" + text + "</b><br>(" + score + "% Confident)", Html.FROM_HTML_MODE_LEGACY));
+            }
+            else {
+                overlayHeader.setText(text + "\n(" + score + "% Confident)");
+            }
         }
     }
 

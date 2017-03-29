@@ -4,7 +4,7 @@
     android:shape="rectangle"
     android:id="@+id/overlay_body">
     <solid
-        android:color="#CC000000"/>
+        android:color="#BB000000"/>
     <corners
         android:bottomRightRadius="10dp"
         android:bottomLeftRadius="10dp" />
