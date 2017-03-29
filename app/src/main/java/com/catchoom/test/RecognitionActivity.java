@@ -70,7 +70,8 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     }
 
     private void restart() {
-        //mCraftARSDK.getCamera().restartCapture();
+        mCraftARSDK.stopFinder();
+        mCraftARSDK.getCamera().restartCapture();
         mCraftARSDK.startFinder();
     }
 
@@ -132,11 +133,9 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
 
         if(results.size() > 0){
 
-            if(mCraftARSDK.isFinding()) {
-                mCraftARSDK.stopFinder();
-            }
-
-            CraftARResult result = results.get(0); // Top result
+            // By getting index 0, we retrieve the top result from the SDK
+            // You may also get other recognitions from the results, if desired
+            CraftARResult result = results.get(0);
             CraftARBoundingBox box = result.getBoundingBox();
 
             String itemName = result.getItem().getItemName();
@@ -151,7 +150,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
                 Log.d(TAG, itemText);
             }
             catch (Exception e) {
-                Log.e(TAG, "Error connecting to database: " + e.getMessage());
+                Log.e(TAG, "Error getting info from database: " + e.getMessage());
             }
 
             trackingBox.setDescriptionText(itemText);
@@ -168,7 +167,6 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     @Override
     public void searchFailed(CraftARError error, int requestCode) {
         Log.e(TAG, "Search failed( "+error.getErrorCode()+"): "+error.getErrorMessage());
-        Toast.makeText(getApplicationContext(), "Search failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
