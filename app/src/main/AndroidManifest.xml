@@ -14,7 +14,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashScreenActivity">
+        <activity
+            android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,8 +26,7 @@
             android:name=".HelpActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".RecognitionActivity"
-            android:screenOrientation="landscape" />
+            android:name=".RecognitionActivity" />
     </application>
 
 </manifest>
