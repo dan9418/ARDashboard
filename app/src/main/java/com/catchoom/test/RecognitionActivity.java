@@ -42,7 +42,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
 
         MODE = Global.CAMERA_MODE.valueOf(getIntent().getStringExtra("MODE"));
 
-        databaseLink = new Communication(Global.SWITCHGEAR_ADDRESS, Global.SWITCHGEAR_PORT);
+        //databaseLink = new Communication(Global.SWITCHGEAR_ADDRESS, Global.SWITCHGEAR_PORT);
         initializeCraftAR();
         initializeTrackingBox();
 

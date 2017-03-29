@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -30,21 +31,21 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
         setContentView(R.layout.splash_screen);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        final ImageButton button_single_shot = (ImageButton) findViewById(R.id.capture_button);
+        final Button button_single_shot = (Button) findViewById(R.id.capture_button);
         button_single_shot.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 launchCapture(v);
             }
         });
 
-        final ImageButton button_continuous = (ImageButton) findViewById(R.id.continuous_button);
+        final Button button_continuous = (Button) findViewById(R.id.continuous_button);
         button_continuous.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 launchContinuous(v);
             }
         });
 
-        final ImageButton button_help = (ImageButton) findViewById(R.id.help_button);
+        final Button button_help = (Button) findViewById(R.id.help_button);
         button_help.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 launchHelp(v);
@@ -88,20 +89,20 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
 
     @Override
     public void collectionAdded(CraftAROnDeviceCollection collection) {
-        Log.e(TAG, "Collection added");
+        Log.d(TAG, "Collection added");
         collection.sync(this);
     }
 
     @Override
     public void addCollectionFailed(CraftARError error) {
-        Toast.makeText(getApplicationContext(), "AddCollection failed: "+
-                error.getErrorMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Add collection failed: "+ error.getErrorMessage(), Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "Add collection failed: "+ error.getErrorMessage());
         finish();
     }
 
     @Override
     public void addCollectionProgress(float progress) {
-        Log.d(TAG, "addCollectionProgress "+ progress);
+        Log.d(TAG, "Add collection progress "+ progress);
     }
 
     @Override
@@ -110,32 +111,32 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
     }
 
     @Override
-    public void syncFinishedWithErrors(CraftAROnDeviceCollection craftAROnDeviceCollection, int i, int i1) {
-        Log.d(TAG, "Sync finished with errors");
+    public void syncFinishedWithErrors(CraftAROnDeviceCollection craftAROnDeviceCollection, int itemsToSync, int syncErrors) {
+        Log.e(TAG, "Sync finished with errors");
     }
 
     @Override
     public void syncProgress(CraftAROnDeviceCollection craftAROnDeviceCollection, float progress) {
-        Log.d(TAG, "syncProgress : "+progress);
+        Log.d(TAG, "Sync progress : "+progress);
     }
 
     @Override
     public void syncFailed(CraftAROnDeviceCollection craftAROnDeviceCollection, CraftARError error) {
-        Log.e(TAG, "syncFailed : "+error.getErrorMessage());
+        Log.e(TAG, "Sync failed : "+error.getErrorMessage());
     }
 
     @Override
     public void setCollectionProgress(double progress) {
-        Log.d(TAG, "Collection progress: " + progress);
+        Log.d(TAG, "Set collection progress: " + progress);
     }
 
     @Override
     public void collectionReady() {
-        Log.d(TAG, "Collection ready");
+        Log.d(TAG, "Collection ready.");
     }
 
     @Override
     public void setCollectionFailed(CraftARError error) {
-        Log.d(TAG, "Setting connection failed..");
+        Log.e(TAG, "Setting connection failed : " + error.getErrorMessage());
     }
 }
