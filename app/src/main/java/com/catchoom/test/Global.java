@@ -2,11 +2,6 @@ package com.catchoom.test;
 
 public class Global {
 
-    public enum CAMERA_MODE {
-        CONTINUOUS,
-        CAPTURE
-    }
-
     // Switchgear data
     public static String SWITCHGEAR_NAME = "Switchgear";
     public static String SWITCHGEAR_ADDRESS = "10.10.0.1";

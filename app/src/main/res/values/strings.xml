@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Eaton AR Dashboard</string>
-    <string name="welcome_text">Welcome to the AR Dashboard. Please select a mode of operation using the buttons to the right.</string>
+    <string name="welcome_text">Welcome to the AR Dashboard!</string>
+    <string name="start">Start</string>
     <string name="capture">Capture</string>
-    <string name="continuous">Continuous</string>
     <string name="help">Help</string>
     <string name="restart">Restart</string>
     <string name="description">Description</string>

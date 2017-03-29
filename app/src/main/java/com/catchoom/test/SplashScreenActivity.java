@@ -30,17 +30,10 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
         setContentView(R.layout.splash_screen);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        final Button button_single_shot = (Button) findViewById(R.id.capture_button);
+        final Button button_single_shot = (Button) findViewById(R.id.start_button);
         button_single_shot.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                launchCapture(v);
-            }
-        });
-
-        final Button button_continuous = (Button) findViewById(R.id.continuous_button);
-        button_continuous.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                launchContinuous(v);
+                launchRecognition(v);
             }
         });
 
@@ -72,15 +65,8 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
 
     // Button listener methods
 
-    private void launchCapture(View view) {
+    private void launchRecognition(View view) {
         Intent intent = new Intent(this, RecognitionActivity.class);
-        intent.putExtra("MODE", Global.CAMERA_MODE.CAPTURE.toString());
-        startActivity(intent);
-    }
-
-    private void launchContinuous(View view) {
-        Intent intent = new Intent(this, RecognitionActivity.class);
-        intent.putExtra("MODE", Global.CAMERA_MODE.CONTINUOUS.toString());
         startActivity(intent);
     }
 

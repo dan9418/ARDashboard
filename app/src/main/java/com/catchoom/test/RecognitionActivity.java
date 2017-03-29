@@ -32,7 +32,6 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     // Regular classes
     TrackingBox trackingBox;
     Communication databaseLink;
-    Global.CAMERA_MODE MODE;
 
     @Override
     public void onPostCreate() {
@@ -40,11 +39,14 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         setContentView(mainLayout);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        // Extract mode of operation
-        MODE = Global.CAMERA_MODE.valueOf(getIntent().getStringExtra("MODE"));
-
         // Establish a connection to the database simulation
-        //databaseLink = new Communication(Global.SWITCHGEAR_ADDRESS, Global.SWITCHGEAR_PORT);
+        try {
+            databaseLink = new Communication(Global.SWITCHGEAR_ADDRESS, Global.SWITCHGEAR_PORT);
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+
 
         // Initialize recognition/tracking components
         initializeCraftAR();
@@ -55,42 +57,31 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
             mCraftARSDK.stopFinder();
         }
 
-        // Launch camera mode
-        if(MODE == Global.CAMERA_MODE.CONTINUOUS) {
-            initializeContinuousUI();
-            startFinder();
-        }
-        else if (MODE == Global.CAMERA_MODE.CAPTURE) {
-            initializeCaptureUI();
-        }
-        else {
-            Log.e(TAG, "Invalid mode");
-        }
+        initializeUI();
+        restart();
+
     }
 
     // Button listener methods
 
-    private void startFinder() {
-        mCraftARSDK.startFinder();
-    }
-
-    private void startCapture() {
+    private void capture() {
+        mCraftARSDK.stopFinder();
         mCraftARSDK.singleShotSearch();
     }
 
-    private void restartCapture() {
-        trackingBox.reset();
-        mCraftARSDK.getCamera().restartCapture();
+    private void restart() {
+        //mCraftARSDK.getCamera().restartCapture();
+        mCraftARSDK.startFinder();
     }
 
-    // UI initialization methods
+    // UI initialization method
 
-    private void initializeCaptureUI() {
+    private void initializeUI() {
         /// Show capture button and set onClick listener
         final Button captureButton = (Button) findViewById(R.id.capture_button);
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startCapture();
+                capture();
             }
         });
 
@@ -98,21 +89,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         final Button restartButton = (Button) findViewById(R.id.restart_button);
         restartButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                restartCapture();
-            }
-        });
-    }
-
-    private void initializeContinuousUI() {
-        // Hide capture button
-        final Button captureButton = (Button) findViewById(R.id.capture_button);
-        captureButton.setVisibility(View.GONE);
-
-        // Show restart button, attach functionality, and start
-        final Button restartButton = (Button) findViewById(R.id.restart_button);
-        restartButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startFinder();
+                restart();
             }
         });
     }
@@ -170,23 +147,17 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
             trackingBox.assignPosition(box);
 
             try {
-                //itemText = databaseLink.getInfo(itemName).toString();
+                itemText = databaseLink.getInfo(itemName).toString();
+                Log.d(TAG, itemText);
             }
             catch (Exception e) {
                 Log.e(TAG, "Error connecting to database: " + e.getMessage());
             }
 
             trackingBox.setDescriptionText(itemText);
-
-            if(MODE == Global.CAMERA_MODE.CONTINUOUS) {
-                startFinder();
-            }
-
         }
         else {
-            if(MODE == Global.CAMERA_MODE.CONTINUOUS) {
-                trackingBox.reset();
-            }
+            trackingBox.reset();
             Log.e(TAG, "Nothing found");
         }
 
