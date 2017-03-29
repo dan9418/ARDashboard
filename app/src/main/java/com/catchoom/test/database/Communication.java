@@ -1,4 +1,4 @@
-package com.catchoom.test.communication;
+package com.catchoom.test.database;
 
 import android.util.Log;
 
@@ -21,6 +21,7 @@ public class Communication {
             String[] components = val.split(",");
             switchgear = new SwitchGearInfo(components);
         } catch(Exception e){
+            Log.e("MyApp", "Unable to establish communication with database.");
         }
     }
     public StringBuilder getInfo(String id){

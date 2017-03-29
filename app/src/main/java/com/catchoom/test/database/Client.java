@@ -1,4 +1,4 @@
-package com.catchoom.test.communication;
+package com.catchoom.test.database;
 
 import android.os.AsyncTask;
 
@@ -14,13 +14,12 @@ import java.net.UnknownHostException;
 public class Client extends AsyncTask<String, String, String> {
 
     String dstAddress;
-    int dstPort;
     String response = "";
+    int dstPort;
 
     Client(String addr, int port) {
         dstAddress = addr;
         dstPort = port;
-
     }
 
     @Override

@@ -23,7 +23,6 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
 
     CraftAROnDeviceIR mCraftAROnDeviceIR;
     CraftAROnDeviceCollectionManager mCollectionManager;
-    private String TOKEN = "d87a91ed431f45bc";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +59,18 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
         //Initialize the Offline IR Module
         mCraftAROnDeviceIR = CraftAROnDeviceIR.Instance();
 
-        //Add collection
-        CraftAROnDeviceCollection collection = mCollectionManager.get(TOKEN);
+        //Add default collection
+        CraftAROnDeviceCollection collection = mCollectionManager.get(Global.TOKEN);
         if(collection != null) {
             collection.sync(this);
-        } else{
+        }
+        else {
             mCollectionManager.addCollection("database.zip", this);
         }
         mCraftAROnDeviceIR.setCollection(collection, true, this);
     }
+
+    // Button listener methods
 
     private void launchCapture(View view) {
         Intent intent = new Intent(this, RecognitionActivity.class);
@@ -78,7 +80,7 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
 
     private void launchContinuous(View view) {
         Intent intent = new Intent(this, RecognitionActivity.class);
-        intent.putExtra("MODE", Global.CAMERA_MODE.CONTINOUS.toString());
+        intent.putExtra("MODE", Global.CAMERA_MODE.CONTINUOUS.toString());
         startActivity(intent);
     }
 
@@ -87,9 +89,11 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
         startActivity(intent);
     }
 
+    // AddCollectionListener methods
+
     @Override
     public void collectionAdded(CraftAROnDeviceCollection collection) {
-        Log.d(TAG, "Collection added");
+        Log.d(TAG, "Collection added.");
         collection.sync(this);
     }
 
@@ -102,28 +106,32 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
 
     @Override
     public void addCollectionProgress(float progress) {
-        Log.d(TAG, "Add collection progress "+ progress);
+        Log.d(TAG, "Add collection progress: "+ progress);
     }
+
+    // SyncCollectionListener methods
 
     @Override
     public void syncSuccessful(CraftAROnDeviceCollection craftAROnDeviceCollection) {
-        Log.d(TAG, "Sync successful");
+        Log.d(TAG, "Sync successful.");
     }
 
     @Override
     public void syncFinishedWithErrors(CraftAROnDeviceCollection craftAROnDeviceCollection, int itemsToSync, int syncErrors) {
-        Log.e(TAG, "Sync finished with errors");
+        Log.e(TAG, "Sync finished with errors.");
     }
 
     @Override
     public void syncProgress(CraftAROnDeviceCollection craftAROnDeviceCollection, float progress) {
-        Log.d(TAG, "Sync progress : "+progress);
+        Log.d(TAG, "Sync progress: "+progress);
     }
 
     @Override
     public void syncFailed(CraftAROnDeviceCollection craftAROnDeviceCollection, CraftARError error) {
-        Log.e(TAG, "Sync failed : "+error.getErrorMessage());
+        Log.e(TAG, "Sync failed: "+error.getErrorMessage());
     }
+
+    // SetOnDeviceCollectionListener methods
 
     @Override
     public void setCollectionProgress(double progress) {
@@ -137,6 +145,6 @@ public class SplashScreenActivity extends AppCompatActivity implements ImageReco
 
     @Override
     public void setCollectionFailed(CraftARError error) {
-        Log.e(TAG, "Setting connection failed : " + error.getErrorMessage());
+        Log.e(TAG, "Setting connection failed: " + error.getErrorMessage());
     }
 }

@@ -8,10 +8,10 @@ import com.craftar.CraftARBoundingBox;
 
 public class TrackingBox {
 
-    TextView overlayHeader;
-    ImageView overlayBody;
-    TextView overlayDescription;
-    RelativeLayout cameraLayout;
+    private TextView overlayHeader;
+    private ImageView overlayBody;
+    private TextView overlayDescription;
+    private RelativeLayout cameraLayout;
 
     public TrackingBox(RelativeLayout layout, ImageView body, TextView header, TextView description) {
         cameraLayout = layout;

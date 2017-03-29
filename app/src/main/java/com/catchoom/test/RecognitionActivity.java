@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.catchoom.test.communication.Communication;
+import com.catchoom.test.database.Communication;
 import com.craftar.CraftARBoundingBox;
 import com.craftar.CraftARCamera;
 import com.craftar.CraftARError;
@@ -40,17 +40,23 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         setContentView(mainLayout);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        // Extract mode of operation
         MODE = Global.CAMERA_MODE.valueOf(getIntent().getStringExtra("MODE"));
 
+        // Establish a connection to the database simulation
         //databaseLink = new Communication(Global.SWITCHGEAR_ADDRESS, Global.SWITCHGEAR_PORT);
+
+        // Initialize recognition/tracking components
         initializeCraftAR();
         initializeTrackingBox();
 
+        // Always stop finding when camera is initially opened
         if(mCraftARSDK.isFinding()) {
             mCraftARSDK.stopFinder();
         }
 
-        if(MODE == Global.CAMERA_MODE.CONTINOUS) {
+        // Launch camera mode
+        if(MODE == Global.CAMERA_MODE.CONTINUOUS) {
             initializeContinuousUI();
             startFinder();
         }
@@ -62,23 +68,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         }
     }
 
-    private void initializeCaptureUI() {
-        /// Show capture button
-        final Button captureButton = (Button) findViewById(R.id.capture_button);
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startCapture();
-            }
-        });
-
-        // Show restart button, attach functionality, and start
-        final Button restartButton = (Button) findViewById(R.id.restart_button);
-        restartButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                restartCapture();
-            }
-        });
-    }
+    // Button listener methods
 
     private void startFinder() {
         mCraftARSDK.startFinder();
@@ -91,6 +81,26 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
     private void restartCapture() {
         trackingBox.reset();
         mCraftARSDK.getCamera().restartCapture();
+    }
+
+    // UI initialization methods
+
+    private void initializeCaptureUI() {
+        /// Show capture button and set onClick listener
+        final Button captureButton = (Button) findViewById(R.id.capture_button);
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startCapture();
+            }
+        });
+
+        // Show restart button and set onClick listener
+        final Button restartButton = (Button) findViewById(R.id.restart_button);
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                restartCapture();
+            }
+        });
     }
 
     private void initializeContinuousUI() {
@@ -107,6 +117,8 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         });
     }
 
+    // Recognition/tracking initialization methods
+
     private void initializeCraftAR() {
         //Obtain an instance of the CraftARSDK (which manages the camera interaction).
         //Note we already called CraftARSDK.init() in the Splash Screen, so we don't have to do it again
@@ -117,14 +129,14 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         mOnDeviceIR = CraftAROnDeviceIR.Instance();
 
         //Tell the SDK that the OnDeviceIR who manage the calls to singleShotSearch() and startFinding().
-        //In this case, as we are using on-device-image-recognition, we will tell the SDK that the OnDeviceIR singleton will manage this calls.
+        //In this case, as we are using on-device-image-recognition, we will tell the SDK that the OnDeviceIR singleton will manage this call.
         mCraftARSDK.setSearchController(mOnDeviceIR.getSearchController());
 
         //Tell the SDK that we want to receive the search responses in this class.
         mOnDeviceIR.setCraftARSearchResponseHandler(this);
 
-        //Obtain the reference to the camera, to be able to restart the camera, trigger focus etc.
-        //Note that if you use single-shot, you will always have to obtain the reference to the camera to restart it after you take the snapshot.
+        //Obtain the reference to the camera, to be able to restart the camera, trigger focus, etc...
+        //Note that if you use capture mode, you will always have to obtain the reference to the camera to restart it after you take the snapshot.
         mCamera = mCraftARSDK.getCamera();
     }
 
@@ -136,6 +148,8 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
                 (TextView) findViewById(R.id.overlay_text)
         );
     }
+
+    // Search response method
 
     public void searchResults(ArrayList<CraftARResult> results, long searchTimeMillis, int requestCode) {
 
@@ -159,25 +173,30 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
                 //itemText = databaseLink.getInfo(itemName).toString();
             }
             catch (Exception e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "Error connecting to database: " + e.getMessage());
             }
 
             trackingBox.setDescriptionText(itemText);
 
-            if(MODE == Global.CAMERA_MODE.CONTINOUS) {
+            if(MODE == Global.CAMERA_MODE.CONTINUOUS) {
                 startFinder();
             }
 
         }
         else {
+            if(MODE == Global.CAMERA_MODE.CONTINUOUS) {
+                trackingBox.reset();
+            }
             Log.e(TAG, "Nothing found");
         }
 
     }
 
+    // CraftARSearchResponseHandler methods
+
     @Override
     public void searchFailed(CraftARError error, int requestCode) {
-        Log.e(TAG, "Search failed( "+error.getErrorCode()+"):"+error.getErrorMessage());
+        Log.e(TAG, "Search failed( "+error.getErrorCode()+"): "+error.getErrorMessage());
         Toast.makeText(getApplicationContext(), "Search failed", Toast.LENGTH_SHORT).show();
     }
 
@@ -189,8 +208,7 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
 
     @Override
     public void onPreviewStarted(int width, int height) {
-        Log.d(TAG, "Preview started");
+        Log.d(TAG, "Preview started.");
     }
-
 
 }

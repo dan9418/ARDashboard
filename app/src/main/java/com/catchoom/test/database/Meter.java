@@ -1,17 +1,17 @@
-package com.catchoom.test.communication;
+package com.catchoom.test.database;
 
 /**
  * Created by van on 3/13/17.
  */
 
-public class Pxm8000 {
+public class Meter {
     int line1c;
     int line1v;
     int line2c;
     int line2v;
     int line3c;
     int line3v;
-    public Pxm8000(int line1c, int line1v, int line2c, int line2v, int line3c, int line3v){
+    public Meter(int line1c, int line1v, int line2c, int line2v, int line3c, int line3v){
         this.line1c=line1c;
         this.line1v=line1v;
         this.line2c=line2c;
