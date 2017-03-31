@@ -41,12 +41,8 @@ public class RecognitionActivity extends CraftARActivity implements CraftARSearc
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Establish a connection to the database simulation
-        try {
             databaseLink = new Communication(Global.SWITCHGEAR_ADDRESS, Global.SWITCHGEAR_PORT);
-        }
-        catch (Exception e){
-            Log.e(TAG, e.getMessage());
-        }
+
 
         // Initialize recognition/tracking components
         initializeCraftAR();

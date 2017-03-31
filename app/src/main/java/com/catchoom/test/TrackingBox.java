@@ -2,6 +2,7 @@ package com.catchoom.test;
 
 import android.os.Build;
 import android.text.Html;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -69,6 +70,7 @@ public class TrackingBox {
     }
 
     public void setDescriptionText(String text) {
+        Log.d("View", text);
         if (overlayDescription != null) {
             overlayDescription.setText(text);
         }

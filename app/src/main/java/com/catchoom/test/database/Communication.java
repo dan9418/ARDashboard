@@ -14,15 +14,16 @@ public class Communication {
     public Communication(String addr, int port) {
         dstAddress = addr;
         dstPort = port;
-        Client myClient = new Client(dstAddress,dstPort);
+        Client myClient = new Client(dstAddress, dstPort);
         try {
-            String val = myClient.execute("SELECT * FROM NAME;").get();
-            Log.d("MyApp", val);
-            String[] components = val.split(",");
-            switchgear = new SwitchGearInfo(components);
-        } catch(Exception e){
+                String val = myClient.execute("SELECT * FROM NAME;").get();
+                Log.d("MyApp", val);
+                String[] components = val.split(",");
+                switchgear = new SwitchGearInfo(components);
+        } catch (Exception e){
             Log.e("MyApp", "Unable to establish communication with database.");
         }
+
     }
     public StringBuilder getInfo(String id){
         StringBuilder display = new StringBuilder("");
@@ -36,17 +37,19 @@ public class Communication {
              for(int i=1; i<tcnames.length; i++ ) {
                  Client myClient = new Client(dstAddress, dstPort);
                  try {
-                     String val = myClient.execute("SELECT * FROM TC100 WHERE NAME = '"+ tcnames[i]+"';").get();
+                     String val = myClient.execute("SELECT * FROM TC100 WHERE NAME = '" + tcnames[i] + "';").get();
                      String[] info = val.split(",");
-                     if(info[1].equals("1")){
-                         display.append(tcnames[i]+" : Alarm\n");
+                     if (info[1].equals("1")) {
+                         display.append(tcnames[i] + " : Alarm\n");
                      } else {
-                         display.append(tcnames[i]+" : "+info[1]+"\n");
+                         display.append(tcnames[i] + " : " + info[2] + " degrees\n");
                      }
+
                  } catch (Exception e) {
-                    return new StringBuilder("");
+                     return new StringBuilder("");
                  }
              }
+                return display;
          } else {
              return new StringBuilder("");
          }
@@ -69,7 +72,6 @@ public class Communication {
                 return new StringBuilder("");
             }
         }
-        return new StringBuilder("");
     }
     public StringBuilder getTC100Info(String name){
         Client myClient = new Client(dstAddress,dstPort);
@@ -82,7 +84,7 @@ public class Communication {
             if (tc.getAlarm()){
                 return new StringBuilder(name+" : Alarm");
             }else{
-                return new StringBuilder(name+" : "+tc.getTemp());
+                return new StringBuilder(name+" : "+tc.getTemp()+" degrees");
             }
 
         } catch(Exception e){
@@ -96,9 +98,9 @@ public class Communication {
             Log.d("MyApp", val);
             String[] vals = val.split(",");
             Pxm8000 pxm= new Pxm8000(Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]),Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
-            return  new StringBuilder(name+"\nLine 1 current : "+pxm.line1c+"\nLine 1 voltage : "+pxm.line1v+"\n" +
-                    "Line 2 current : "+pxm.line2c+
-                    "\nLine 2 voltage : "+pxm.line2v+"\nLine 3 current : "+pxm.line3c+"\nLine 3 voltage : "+pxm.line3v);
+            return  new StringBuilder(name+"\nLine 1 current : "+pxm.line1c+"A\nLine 1 voltage : "+pxm.line1v+"\n" +
+                    "VLine 2 current : "+pxm.line2c+
+                    "A\nLine 2 voltage : "+pxm.line2v+"V\nLine 3 current : "+pxm.line3c+"A\nLine 3 voltage : "+pxm.line3v+"V");
         } catch(Exception e) {
             return new StringBuilder("");
         }
@@ -111,9 +113,9 @@ public class Communication {
             Log.d("MyApp", val);
             String[] vals = val.split(",");
             Meter meters= new Meter(Integer.valueOf(vals[1]),Integer.valueOf(vals[2]),Integer.valueOf(vals[3]),Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
-            return  new StringBuilder(name+"\nLine 1 current : "+meters.line1c+"\nLine 1 voltage : "+meters.line1v+"\n" +
+            return  new StringBuilder(name+"\nLine 1 current : "+meters.line1c+" A\nLine 1 voltage : "+meters.line1v+" V\n" +
                     "Line 2 current : "+meters.line2c+
-                    "\nLine 2 voltage : "+meters.line2v+"\nLine 3 current : "+meters.line3c+"\nLine 3 voltage : "+meters.line3v);
+                    "A\nLine 2 voltage : "+meters.line2v+"V\nLine 3 current : "+meters.line3c+"A\nLine 3 voltage : "+meters.line3v +"V");
         } catch(Exception e){
         }
         return null;
@@ -123,7 +125,6 @@ public class Communication {
 
         try {
             String val = myClient.execute("SELECT * FROM MAGNUM WHERE NAME = '"+name+"';").get();
-            Log.d("MyApp", val);
             String[] vals = val.split(",");
             Magnum mag = new Magnum(vals[1], Integer.valueOf(vals[2]), Integer.valueOf(vals[3]), Integer.valueOf(vals[4]), Integer.valueOf(vals[5]), Integer.valueOf(vals[6]));
             StringBuilder magnumbuilder = new StringBuilder(name);
@@ -140,9 +141,9 @@ public class Communication {
             } else {
                 magnumbuilder.append("\nStatus : Close");
             }
-            magnumbuilder.append("\nLine 1 current : "+mag.getLine1c()+ "\nLine 2 current : "+mag.getLine2c()+"\nLine 3 current"+mag.getLine3c());
+            return magnumbuilder.append("\nLine 1 current : "+mag.getLine1c()+ "A\nLine 2 current : "+mag.getLine2c()+"A\nLine 3 current : "+mag.getLine3c()+"A");
         } catch(Exception e){
+            return new StringBuilder(e.toString());
         }
-        return null;
     }
 }
