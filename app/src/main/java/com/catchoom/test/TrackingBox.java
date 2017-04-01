@@ -44,6 +44,7 @@ public class TrackingBox {
         p.height = (int) (bottomSide - topSide);
         overlayBody.setLayoutParams(p);
         overlayHeader.bringToFront();
+        overlayDescription.bringToFront();
 
         // Force repaint
         overlayBody.invalidate();
