@@ -1,12 +1,25 @@
 <resources>
+    <!--splash screen-->
     <string name="app_name">Eaton AR Dashboard</string>
-    <string name="welcome_text">Welcome to the AR Dashboard!</string>
-    <string name="start">Start</string>
-    <string name="capture">Capture</string>
-    <string name="help">Help</string>
-    <string name="restart">Restart</string>
-    <string name="description">Description</string>
     <string name="ard">Augmented Reality Dashboard</string>
+    <string name="start">Start</string>
+    <string name="help">Help</string>
+    <!--recognition buttons-->
+    <string name="restart">Restart</string>
+    <string name="capture">Capture</string>
+    <!--placeholders-->
+    <string name="description">Description</string>
     <string name="not_available">N/A</string>
     <string name="title">Title</string>
+    <!--help page-->
+    <string name="help_header">Using the Augmented Reality Dashboard</string>
+    <string name="instructions_header">Instructions</string>
+    <string name="instructions_text">Hold the tablet in landscape orientation while pointing the rear-facing camera at the switchgear. Adjust your position so that the entire switchgear or the desired switchgear component is in the tablet’s field of vision. When the switchgear/component is recognized, the tablet will overlay the corresponding operating conditions."</string>
+    <string name="restart_button_header">Restart Button</string>
+    <string name="restart_button_text">The restart button will reinitialize the recognition process. Use this when you have trouble recognizing a component or the camera won\'t focus.</string>
+    <string name="capture_button_header">Capture Button</string>
+    <string name="capture_button_text">The capture button will freeze the current frame so you can view the values without holding the camera in front of the switchgear.</string>
+    <string name="setup_header">Set-Up</string>
+    <string name="setup_text">Please refer to the AR Dashboard documentation to learn about the setup process when using this application for the first time on a new switchboard.</string>
+    <string name="back">Back</string>
 </resources>
